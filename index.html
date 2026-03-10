@@ -2,14 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>町屋の日 AR Experience</title>
     
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     
     <script>
-      // ▼▼▼ スライドショーコンポーネント (自動中央配置＆フェード機能) ▼▼▼
+      // ▼▼▼ スライドショーコンポーネント (手動操作・自動調整機能付き) ▼▼▼
       AFRAME.registerComponent('auto-slideshow', {
         schema: { 
           srcs: { type: 'array' }, 
@@ -20,20 +20,17 @@
           this.el.setAttribute('material', 'transparent: true; opacity: 1; shader: flat;');
           this.index = 0; 
           this.timer = null;
+          this.isPlaying = false;
+          this.isAnimating = false; // 連打防止用
           
           const img = document.querySelector(this.data.srcs[0]);
-          if (img.complete) {
-            this.adjustSize(img);
-          } else {
-            img.onload = () => this.adjustSize(img);
-          }
+          if (img.complete) { this.adjustSize(img); } 
+          else { img.onload = () => this.adjustSize(img); }
         },
         adjustSize: function(img) {
-          // 画像の縦横比を計算し、ターゲット（幅1.0）の中心に常に配置する
           const w = img.naturalWidth;
           const h = img.naturalHeight;
           const maxSize = 1.0; 
-          
           if (w > h) {
             this.el.setAttribute('width', maxSize);
             this.el.setAttribute('height', maxSize * (h / w));
@@ -42,57 +39,65 @@
             this.el.setAttribute('height', maxSize);
           }
         },
-        play: function() {
+        startSlide: function() {
           if (this.timer) return;
-          this.timer = setInterval(() => { this.nextSlide(); }, this.data.interval);
+          this.isPlaying = true;
+          this.timer = setInterval(() => { this.changeSlide(1); }, this.data.interval);
         },
-        pause: function() {
+        stopSlide: function() {
           if (this.timer) clearInterval(this.timer);
           this.timer = null;
-          this.el.setAttribute('material', 'opacity', 1);
+          this.isPlaying = false;
         },
-        nextSlide: function () {
-          const el = this.el;
+        // 方向(dir): 1で次へ、-1で戻る
+        changeSlide: function (dir) {
+          if (this.isAnimating) return;
+          this.isAnimating = true;
           
-          el.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 800, easing: 'easeInOutQuad' });
+          // 再生中に手動操作された場合、タイマーをリセットして再開
+          if (this.isPlaying) {
+            clearInterval(this.timer);
+            this.timer = setInterval(() => { this.changeSlide(1); }, this.data.interval);
+          }
+
+          const el = this.el;
+          el.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 400, easing: 'easeInOutQuad' });
           
           setTimeout(() => {
-            this.index = (this.index + 1) % this.data.srcs.length;
+            // マイナス値対応のインデックス計算
+            this.index = (this.index + dir + this.data.srcs.length) % this.data.srcs.length;
             el.setAttribute('src', this.data.srcs[this.index]);
             
             const img = document.querySelector(this.data.srcs[this.index]);
-            if(img.complete) {
-                this.adjustSize(img);
-            } else {
-                img.onload = () => this.adjustSize(img);
-            }
+            if(img.complete) { this.adjustSize(img); } 
+            else { img.onload = () => this.adjustSize(img); }
             
             el.removeAttribute('animation');
-            el.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 800, easing: 'easeInOutQuad' });
-          }, 800);
+            el.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 400, easing: 'easeInOutQuad' });
+            
+            setTimeout(() => { this.isAnimating = false; }, 400); // アニメーション終了
+          }, 400);
         }
       });
 
-      // ▼▼▼ スマホ縦横回転時の表示崩れ修正 ▼▼▼
+      // ▼▼▼ スマホ横向き（画面回転）時のAR認識ズレを強力に補正 ▼▼▼
       window.addEventListener('orientationchange', () => {
-        // 回転直後は画面サイズが確定していないため、少し遅らせてからリサイズを強制実行
-        setTimeout(() => {
-          window.dispatchEvent(new Event('resize'));
-        }, 200);
+        // 回転直後はブラウザのサイズ計算が遅れるため、時間差で複数回リサイズイベントを発火させます
+        [100, 300, 500].forEach(delay => {
+            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, delay);
+        });
       });
     </script>
 
     <style>
-      /* 縦横回転対応の厳格なCSSリセット */
+      /* 厳格なCSSリセットとベースデザイン */
       html, body { 
-        margin: 0; padding: 0; 
-        width: 100%; height: 100%; 
-        overflow: hidden; position: fixed; /* iOSのスクロールバウンス防止 */
+        margin: 0; padding: 0; width: 100vw; height: 100vh; 
+        overflow: hidden; position: fixed; 
         font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; 
         background: #000; 
       }
       
-      /* ローディング画面 */
       #loading { 
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
         background: radial-gradient(circle, #2a2a2a 0%, #000 100%); 
@@ -100,44 +105,72 @@
         justify-content: center; align-items: center; transition: opacity 0.8s ease-out; 
       }
       .loader { 
-        width: 40px; height: 40px; 
-        border: 1px solid rgba(255, 255, 255, 0.1); 
+        width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.1); 
         border-top: 1px solid #fff; border-radius: 50%; 
         animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite; 
       }
       #loading-text { 
-        margin-top: 25px; color: #fff; font-size: 11px; 
-        letter-spacing: 4px; text-transform: uppercase; font-weight: 300; opacity: 0.8;
+        margin-top: 25px; color: #fff; font-size: 11px; letter-spacing: 4px; font-weight: 300; opacity: 0.8;
       }
       @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-      /* スキャンガイド (文言変更) */
+      /* スキャンガイド */
       #scan-guide { 
-        position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
-        color: rgba(255,255,255,0.9); font-size: 14px; letter-spacing: 2px; 
+        position: fixed; top: 40px; left: 50%; transform: translateX(-50%);
+        color: rgba(255,255,255,0.9); font-size: 13px; letter-spacing: 2px; 
         background: rgba(0,0,0,0.5); padding: 12px 24px; border-radius: 30px;
         backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);
-        pointer-events: none; z-index: 8000; transition: opacity 0.5s ease;
-        white-space: nowrap;
+        pointer-events: none; z-index: 8000; transition: opacity 0.5s ease; white-space: nowrap;
       }
 
-      /* フッター (リンク削除・文言変更) */
+      /* フッター */
       #footer-frame { 
         position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; 
         background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); 
-        display: flex; justify-content: center; align-items: center; 
-        z-index: 9999; pointer-events: none; /* タッチ無効化 */
+        display: flex; justify-content: center; align-items: flex-end; padding-bottom: 20px;
+        z-index: 9998; pointer-events: none; 
       }
-      .footer-text { 
-        color: #fff; font-size: 16px; letter-spacing: 6px; 
-        font-weight: normal; text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      .footer-text { color: #fff; font-size: 16px; letter-spacing: 6px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
+
+      /* ▼▼▼ オシャレな再生コントローラー ▼▼▼ */
+      #controls-panel {
+        position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%);
+        display: flex; align-items: center; gap: 20px;
+        background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px);
+        padding: 10px 25px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.15);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.5s ease, transform 0.5s ease;
       }
+      #controls-panel.active {
+        opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0);
+      }
+      .ctrl-btn {
+        background: none; border: none; outline: none; cursor: pointer;
+        padding: 5px; display: flex; align-items: center; justify-content: center;
+        opacity: 0.8; transition: opacity 0.2s;
+      }
+      .ctrl-btn:active { opacity: 0.4; }
+      .ctrl-btn svg { width: 22px; height: 22px; fill: white; }
+      .ctrl-btn-stroke svg { fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     </style>
   </head>
   <body>
 
     <div id="loading"><div class="loader"></div><div id="loading-text">LOADING EXPERIENCE</div></div>
     <div id="scan-guide">パネルを映してください</div>
+    
+    <div id="controls-panel">
+      <button class="ctrl-btn ctrl-btn-stroke" onclick="globalPrev()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <button class="ctrl-btn" id="play-pause-btn" onclick="globalTogglePlay()">
+        <svg id="icon-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>
+      </button>
+      <button class="ctrl-btn ctrl-btn-stroke" onclick="globalNext()">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+
     <div id="footer-frame"><div class="footer-text">町屋の日</div></div>
 
     <a-scene 
@@ -164,21 +197,15 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-image id="slideshow-1" position="0 0 0" 
-                 auto-slideshow="srcs: #s1-1, #s1-2, #s1-3; interval: 3500">
-        </a-image>
+        <a-image id="slideshow-1" position="0 0 0" auto-slideshow="srcs: #s1-1, #s1-2, #s1-3; interval: 3500"></a-image>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-image id="slideshow-2" position="0 0 0" 
-                 auto-slideshow="srcs: #s2-1, #s2-2, #s2-3; interval: 3500">
-        </a-image>
+        <a-image id="slideshow-2" position="0 0 0" auto-slideshow="srcs: #s2-1, #s2-2, #s2-3; interval: 3500"></a-image>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 2">
-        <a-image id="slideshow-3" position="0 0 0" 
-                 auto-slideshow="srcs: #s3-1, #s3-2, #s3-3; interval: 3500">
-        </a-image>
+        <a-image id="slideshow-3" position="0 0 0" auto-slideshow="srcs: #s3-1, #s3-2, #s3-3; interval: 3500"></a-image>
       </a-entity>
 
     </a-scene>
@@ -186,13 +213,18 @@
     <script>
       const loadingDiv = document.getElementById('loading');
       const scanGuide = document.getElementById('scan-guide');
+      const controlsPanel = document.getElementById('controls-panel');
       const sceneEl = document.querySelector('a-scene');
+      const playPauseBtn = document.getElementById('play-pause-btn');
       
       const slide1 = document.getElementById('slideshow-1');
       const slide2 = document.getElementById('slideshow-2');
       const slide3 = document.getElementById('slideshow-3');
 
-      // ロード完了処理
+      // アイコンのSVGデータ
+      const iconPlay = '<svg viewBox="0 0 24 24"><path d="M7 4V20L19 12L7 4Z"></path></svg>';
+      const iconPause = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
+
       sceneEl.addEventListener('arReady', () => { hideLoading(); });
       sceneEl.addEventListener('arError', () => { hideLoading(); alert("カメラにアクセスできませんでした。"); });
       setTimeout(() => { hideLoading(); }, 10000);
@@ -204,11 +236,26 @@
         }
       }
 
-      // ガイド表示の切り替え
-      let activeTargets = 0;
-      function updateGuideVisibility() {
-          scanGuide.style.opacity = activeTargets > 0 ? 0 : 1;
-      }
+      let activeSlideshowComponent = null;
+
+      // コントロールパネルの操作関数
+      window.globalPrev = function() {
+        if (activeSlideshowComponent) activeSlideshowComponent.changeSlide(-1);
+      };
+      window.globalNext = function() {
+        if (activeSlideshowComponent) activeSlideshowComponent.changeSlide(1);
+      };
+      window.globalTogglePlay = function() {
+        if (!activeSlideshowComponent) return;
+        
+        if (activeSlideshowComponent.isPlaying) {
+          activeSlideshowComponent.stopSlide();
+          playPauseBtn.innerHTML = iconPlay;
+        } else {
+          activeSlideshowComponent.startSlide();
+          playPauseBtn.innerHTML = iconPause;
+        }
+      };
 
       const targets = [
           { el: document.querySelector('[mindar-image-target="targetIndex: 0"]'), content: slide1 },
@@ -220,19 +267,23 @@
           if(!t.el) return;
           
           t.el.addEventListener('targetFound', () => {
-              activeTargets++;
-              updateGuideVisibility();
+              scanGuide.style.opacity = 0; // ガイドを隠す
+              controlsPanel.classList.add('active'); // コントロール表示
+              
               if (t.content && t.content.components['auto-slideshow']) {
-                  t.content.components['auto-slideshow'].play();
+                  activeSlideshowComponent = t.content.components['auto-slideshow'];
+                  activeSlideshowComponent.startSlide();
+                  playPauseBtn.innerHTML = iconPause; // 再生中アイコンにする
               }
           });
           
           t.el.addEventListener('targetLost', () => {
-              activeTargets--;
-              if(activeTargets < 0) activeTargets = 0;
-              updateGuideVisibility();
+              scanGuide.style.opacity = 1; // ガイドを表示
+              controlsPanel.classList.remove('active'); // コントロール隠す
+              
               if (t.content && t.content.components['auto-slideshow']) {
-                  t.content.components['auto-slideshow'].pause();
+                  t.content.components['auto-slideshow'].stopSlide();
+                  activeSlideshowComponent = null;
               }
           });
       });
