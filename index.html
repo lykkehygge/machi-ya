@@ -9,6 +9,38 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     
     <script>
+      // ▼▼▼ ジェスチャー検出 (2本指のピンチ操作のみを軽量に検知) ▼▼▼
+      AFRAME.registerComponent("gesture-detector", {
+        init: function() {
+          this.internalState = { previousState: null };
+          this.emitGestureEvent = this.emitGestureEvent.bind(this);
+          window.addEventListener("touchstart", this.emitGestureEvent);
+          window.addEventListener("touchend", this.emitGestureEvent);
+          window.addEventListener("touchmove", this.emitGestureEvent);
+        },
+        emitGestureEvent: function(event) {
+          const currentState = this.getTouchState(event);
+          const previousState = this.internalState.previousState;
+          
+          if (previousState && currentState && currentState.touchCount === 2 && previousState.touchCount === 2) {
+            const eventDetail = {
+              spreadChange: currentState.spread - previousState.spread,
+              spread: currentState.spread
+            };
+            this.el.emit("twofingermove", eventDetail);
+          }
+          this.internalState.previousState = currentState;
+        },
+        getTouchState: function(event) {
+          if (event.touches.length !== 2) return null;
+          const spread = Math.hypot(
+            event.touches[0].pageX - event.touches[1].pageX, 
+            event.touches[0].pageY - event.touches[1].pageY
+          );
+          return { touchCount: 2, spread: spread };
+        }
+      });
+
       // ▼▼▼ スライドショーコンポーネント ▼▼▼
       AFRAME.registerComponent('auto-slideshow', {
         schema: { 
@@ -16,16 +48,44 @@
           interval: { type: 'number', default: 3500 }
         },
         init: function () {
-          this.el.setAttribute('src', this.data.srcs[0]);
-          this.el.setAttribute('material', 'transparent: true; opacity: 1; shader: flat;');
-          this.index = 0; 
+          // 状態保存用のキーを設定
+          this.storageKey = 'slide_index_' + this.el.id;
+          const savedIndex = sessionStorage.getItem(this.storageKey);
+          this.index = savedIndex !== null ? parseInt(savedIndex, 10) : 0;
+          
+          this.el.setAttribute('src', this.data.srcs[this.index]);
+          this.el.setAttribute('material', { shader: 'flat', transparent: true, opacity: 1 });
+          
           this.timer = null;
           this.isPlaying = false;
           this.isAnimating = false; 
           
-          const img = document.querySelector(this.data.srcs[0]);
+          // ズーム用のスケール管理
+          this.scaleFactor = 1.0;
+          this.el.sceneEl.addEventListener('twofingermove', this.handleZoom.bind(this));
+          
+          const img = document.querySelector(this.data.srcs[this.index]);
           if (img.complete) { this.adjustSize(img); } 
           else { img.onload = () => this.adjustSize(img); }
+        },
+        handleZoom: function(e) {
+            if (window.activeSlideshowComponent !== this) return; // 表示中のスライドだけズーム
+            const prevSpread = e.detail.spread - e.detail.spreadChange;
+            if (prevSpread === 0) return;
+            
+            this.scaleFactor *= (e.detail.spread / prevSpread);
+            this.scaleFactor = Math.min(Math.max(this.scaleFactor, 1.0), 4.0); // 1倍〜4倍まで
+            
+            // テクスチャのUVマップを変更して「枠内でクロップ拡大」を実現
+            const repeat = 1 / this.scaleFactor;
+            const offset = (1 - repeat) / 2;
+            this.el.setAttribute('material', 'repeat', `${repeat} ${repeat}`);
+            this.el.setAttribute('material', 'offset', `${offset} ${offset}`);
+        },
+        resetZoom: function() {
+            this.scaleFactor = 1.0;
+            this.el.setAttribute('material', 'repeat', '1 1');
+            this.el.setAttribute('material', 'offset', '0 0');
         },
         adjustSize: function(img) {
           const w = img.naturalWidth;
@@ -62,7 +122,11 @@
           el.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 400, easing: 'easeInOutQuad' });
           
           setTimeout(() => {
+            this.resetZoom(); // 画像が切り替わる時にズームをリセット
+            
             this.index = (this.index + dir + this.data.srcs.length) % this.data.srcs.length;
+            sessionStorage.setItem(this.storageKey, this.index); // インデックスを保存
+            
             el.setAttribute('src', this.data.srcs[this.index]);
             
             const img = document.querySelector(this.data.srcs[this.index]);
@@ -99,21 +163,31 @@
         background: #000; 
       }
       
-      /* ▼▼▼ リッチな黒枠（ファインダー風演出） ▼▼▼ */
+      /* ▼▼▼ リッチな黒枠 (太さ2倍＆グラデーション) ▼▼▼ */
       #camera-frame {
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        /* マットな黒の太枠 */
-        border: 12px solid rgba(15, 15, 15, 0.95);
-        /* 画面端に落ちる自然な影（ビネット効果） */
-        box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
         pointer-events: none; z-index: 7999; box-sizing: border-box;
+        
+        /* paddingを24pxにし、内側を切り抜くことでグラデーションの太枠を作る */
+        padding: 24px;
+        background: radial-gradient(circle, #3a3a3a 0%, #000 100%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
       }
-      /* 四隅のフォーカスデザイン */
-      .corner { position: absolute; width: 25px; height: 25px; border-color: rgba(255,255,255,0.3); border-style: solid; }
-      .top-left { top: 20px; left: 20px; border-width: 1px 0 0 1px; }
-      .top-right { top: 20px; right: 20px; border-width: 1px 1px 0 0; }
-      .bottom-left { bottom: 20px; left: 20px; border-width: 0 0 1px 1px; }
-      .bottom-right { bottom: 20px; right: 20px; border-width: 0 1px 1px 0; }
+      /* 内側のビネット（影） */
+      #camera-vignette {
+        position: fixed; top: 24px; left: 24px; right: 24px; bottom: 24px;
+        box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
+        pointer-events: none; z-index: 7998;
+      }
+
+      /* 四隅のフォーカスデザイン (24px枠に合わせた配置) */
+      .corner { position: absolute; width: 25px; height: 25px; border-color: rgba(255,255,255,0.4); border-style: solid; }
+      .top-left { top: 35px; left: 35px; border-width: 1px 0 0 1px; }
+      .top-right { top: 35px; right: 35px; border-width: 1px 1px 0 0; }
+      .bottom-left { bottom: 35px; left: 35px; border-width: 0 0 1px 1px; }
+      .bottom-right { bottom: 35px; right: 35px; border-width: 0 1px 1px 0; }
 
       /* ローディング画面 */
       #loading { 
@@ -132,24 +206,24 @@
 
       /* スキャンガイド */
       #scan-guide { 
-        position: fixed; top: 50px; left: 50%; transform: translateX(-50%);
+        position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
         color: rgba(255,255,255,0.9); font-size: 13px; letter-spacing: 2px; 
         background: rgba(0,0,0,0.5); padding: 12px 24px; border-radius: 30px;
         backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);
         pointer-events: none; z-index: 8000; transition: opacity 0.5s ease; white-space: nowrap;
       }
 
-      /* 縦向き用のデフォルト配置（フッターとコントロール） */
+      /* 縦向き配置 */
       #footer-frame { 
-        position: fixed; bottom: 0; left: 0; width: 100%; height: 90px; 
-        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); 
-        display: flex; justify-content: center; align-items: flex-end; padding-bottom: 25px;
+        position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; 
+        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); 
+        display: flex; justify-content: center; align-items: flex-end; padding-bottom: 35px;
         z-index: 9998; pointer-events: none; 
       }
       .footer-text { color: #fff; font-size: 16px; letter-spacing: 6px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
 
       #controls-panel {
-        position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%);
+        position: fixed; bottom: 105px; left: 50%; transform: translateX(-50%);
         display: flex; align-items: center; gap: 20px;
         background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px);
         padding: 10px 25px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.15);
@@ -163,32 +237,27 @@
       .ctrl-btn svg { width: 22px; height: 22px; fill: white; }
       .ctrl-btn-stroke svg { fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-
-      /* ▼▼▼ スマホ横向き時のレイアウト（右側へ寄せる） ▼▼▼ */
+      /* 横向き配置 */
       @media screen and (orientation: landscape) {
         #footer-frame {
-          bottom: 25px; top: auto; left: auto; right: 25px;
+          bottom: 35px; top: auto; left: auto; right: 35px;
           width: auto; height: auto; background: none; padding-bottom: 0;
         }
-        .footer-text {
-          letter-spacing: 4px; font-size: 14px;
-        }
+        .footer-text { letter-spacing: 4px; font-size: 14px; }
         #controls-panel {
-          bottom: 50%; left: auto; right: 30px;
-          /* 右側に隠しておき、activeでスライドインさせる */
+          bottom: 50%; left: auto; right: 40px;
           transform: translateY(50%) translateX(20px);
           flex-direction: column; gap: 15px; padding: 25px 10px;
         }
-        #controls-panel.active {
-          transform: translateY(50%) translateX(0);
-        }
-        #scan-guide { top: 30px; }
+        #controls-panel.active { transform: translateY(50%) translateX(0); }
+        #scan-guide { top: 40px; }
       }
     </style>
   </head>
   <body>
 
-    <div id="camera-frame">
+    <div id="camera-frame"></div>
+    <div id="camera-vignette">
         <div class="corner top-left"></div>
         <div class="corner top-right"></div>
         <div class="corner bottom-left"></div>
@@ -199,15 +268,9 @@
     <div id="scan-guide">パネルを映してください</div>
     
     <div id="controls-panel">
-      <button class="ctrl-btn ctrl-btn-stroke" onclick="globalPrev()">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
-      </button>
-      <button class="ctrl-btn" id="play-pause-btn" onclick="globalTogglePlay()">
-        <svg id="icon-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>
-      </button>
-      <button class="ctrl-btn ctrl-btn-stroke" onclick="globalNext()">
-        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
-      </button>
+      <button class="ctrl-btn ctrl-btn-stroke" onclick="globalPrev()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+      <button class="ctrl-btn" id="play-pause-btn" onclick="globalTogglePlay()"><svg id="icon-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg></button>
+      <button class="ctrl-btn ctrl-btn-stroke" onclick="globalNext()"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
     </div>
 
     <div id="footer-frame"><div class="footer-text">町屋の日</div></div>
@@ -217,17 +280,16 @@
       color-space="sRGB" 
       renderer="colorManagement: true; antialias: true;" 
       vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false">
+      device-orientation-permission-ui="enabled: false"
+      gesture-detector>
       
       <a-assets>
         <img id="s1-1" src="./s1-1.jpg" />
         <img id="s1-2" src="./s1-2.jpg" />
         <img id="s1-3" src="./s1-3.jpg" />
-        
         <img id="s2-1" src="./s2-1.jpg" />
         <img id="s2-2" src="./s2-2.jpg" />
         <img id="s2-3" src="./s2-3.jpg" />
-        
         <img id="s3-1" src="./s3-1.jpg" />
         <img id="s3-2" src="./s3-2.jpg" />
         <img id="s3-3" src="./s3-3.jpg" />
@@ -236,15 +298,27 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-image id="slideshow-1" position="0 0 0" auto-slideshow="srcs: #s1-1, #s1-2, #s1-3; interval: 3500"></a-image>
+        <a-entity scale="0.9 0.9 0.9">
+            <a-plane color="#000" opacity="0.5" width="1.15" height="1.15" position="0.04 -0.04 -0.02"></a-plane>
+            <a-plane color="#151515" opacity="0.95" width="1.1" height="1.1" position="0 0 -0.01"></a-plane>
+            <a-image id="slideshow-1" position="0 0 0" auto-slideshow="srcs: #s1-1, #s1-2, #s1-3; interval: 3500"></a-image>
+        </a-entity>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-image id="slideshow-2" position="0 0 0" auto-slideshow="srcs: #s2-1, #s2-2, #s2-3; interval: 3500"></a-image>
+        <a-entity scale="0.9 0.9 0.9">
+            <a-plane color="#000" opacity="0.5" width="1.15" height="1.15" position="0.04 -0.04 -0.02"></a-plane>
+            <a-plane color="#151515" opacity="0.95" width="1.1" height="1.1" position="0 0 -0.01"></a-plane>
+            <a-image id="slideshow-2" position="0 0 0" auto-slideshow="srcs: #s2-1, #s2-2, #s2-3; interval: 3500"></a-image>
+        </a-entity>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 2">
-        <a-image id="slideshow-3" position="0 0 0" auto-slideshow="srcs: #s3-1, #s3-2, #s3-3; interval: 3500"></a-image>
+        <a-entity scale="0.9 0.9 0.9">
+            <a-plane color="#000" opacity="0.5" width="1.15" height="1.15" position="0.04 -0.04 -0.02"></a-plane>
+            <a-plane color="#151515" opacity="0.95" width="1.1" height="1.1" position="0 0 -0.01"></a-plane>
+            <a-image id="slideshow-3" position="0 0 0" auto-slideshow="srcs: #s3-1, #s3-2, #s3-3; interval: 3500"></a-image>
+        </a-entity>
       </a-entity>
 
     </a-scene>
@@ -260,7 +334,6 @@
       const slide2 = document.getElementById('slideshow-2');
       const slide3 = document.getElementById('slideshow-3');
 
-      // SVGアイコン
       const iconPlay = '<svg viewBox="0 0 24 24"><path d="M7 4V20L19 12L7 4Z"></path></svg>';
       const iconPause = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
 
@@ -275,23 +348,31 @@
         }
       }
 
-      let activeSlideshowComponent = null;
+      window.activeSlideshowComponent = null;
+
+      // 再生状態をセッションストレージから復元
+      let savedPlayState = sessionStorage.getItem('globalIsPlaying');
+      let shouldPlay = savedPlayState === null ? true : (savedPlayState === 'true');
 
       window.globalPrev = function() {
-        if (activeSlideshowComponent) activeSlideshowComponent.changeSlide(-1);
+        if (window.activeSlideshowComponent) window.activeSlideshowComponent.changeSlide(-1);
       };
       window.globalNext = function() {
-        if (activeSlideshowComponent) activeSlideshowComponent.changeSlide(1);
+        if (window.activeSlideshowComponent) window.activeSlideshowComponent.changeSlide(1);
       };
       window.globalTogglePlay = function() {
-        if (!activeSlideshowComponent) return;
+        if (!window.activeSlideshowComponent) return;
         
-        if (activeSlideshowComponent.isPlaying) {
-          activeSlideshowComponent.stopSlide();
+        if (window.activeSlideshowComponent.isPlaying) {
+          window.activeSlideshowComponent.stopSlide();
           playPauseBtn.innerHTML = iconPlay;
+          sessionStorage.setItem('globalIsPlaying', 'false');
+          shouldPlay = false;
         } else {
-          activeSlideshowComponent.startSlide();
+          window.activeSlideshowComponent.startSlide();
           playPauseBtn.innerHTML = iconPause;
+          sessionStorage.setItem('globalIsPlaying', 'true');
+          shouldPlay = true;
         }
       };
 
@@ -309,9 +390,14 @@
               controlsPanel.classList.add('active'); 
               
               if (t.content && t.content.components['auto-slideshow']) {
-                  activeSlideshowComponent = t.content.components['auto-slideshow'];
-                  activeSlideshowComponent.startSlide();
-                  playPauseBtn.innerHTML = iconPause; 
+                  window.activeSlideshowComponent = t.content.components['auto-slideshow'];
+                  
+                  if (shouldPlay) {
+                      window.activeSlideshowComponent.startSlide();
+                      playPauseBtn.innerHTML = iconPause;
+                  } else {
+                      playPauseBtn.innerHTML = iconPlay;
+                  }
               }
           });
           
@@ -321,7 +407,7 @@
               
               if (t.content && t.content.components['auto-slideshow']) {
                   t.content.components['auto-slideshow'].stopSlide();
-                  activeSlideshowComponent = null;
+                  window.activeSlideshowComponent = null;
               }
           });
       });
