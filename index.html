@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     
     <script>
-      // ▼▼▼ ジェスチャー検出 (1本指の移動と2本指の拡大縮小を検知) ▼▼▼
+      // ▼▼▼ ジェスチャー検出 (1本指の移動と2本指の拡大縮小) ▼▼▼
       AFRAME.registerComponent("gesture-detector", {
         init: function() {
           this.internalState = { previousState: null };
@@ -54,8 +54,7 @@
               position: { 
                 x: (event.touches[0].pageX + event.touches[1].pageX) / 2, 
                 y: (event.touches[0].pageY + event.touches[1].pageY) / 2 
-              }, 
-              spread: spread 
+              }, spread: spread 
             };
           }
           return null;
@@ -80,7 +79,6 @@
           this.isPlaying = false;
           this.isAnimating = false; 
           
-          // ズーム・移動用の変数
           this.scaleFactor = 1.0;
           this.offsetX = 0;
           this.offsetY = 0;
@@ -99,12 +97,11 @@
             
             const oldRepeat = 1 / this.scaleFactor;
             this.scaleFactor *= (e.detail.spread / prevSpread);
-            this.scaleFactor = Math.min(Math.max(this.scaleFactor, 1.0), 4.0); // 最大4倍まで
+            this.scaleFactor = Math.min(Math.max(this.scaleFactor, 1.0), 4.0); 
             
             const newRepeat = 1 / this.scaleFactor;
             const diff = oldRepeat - newRepeat;
             
-            // 拡大した分だけ中心を調整
             this.offsetX += diff / 2;
             this.offsetY += diff / 2;
             
@@ -114,12 +111,10 @@
         handlePan: function(e) {
             if (window.activeSlideshowComponent !== this || this.scaleFactor <= 1.0) return;
             
-            // 移動速度の調整
             const speed = 1.2; 
             const dx = (e.detail.positionChange.x / window.innerWidth) * speed;
             const dy = (e.detail.positionChange.y / window.innerHeight) * speed;
             
-            // 指の動きに合わせてオフセット（テクスチャの位置）を移動
             this.offsetX -= dx / this.scaleFactor;
             this.offsetY += dy / this.scaleFactor;
             
@@ -127,7 +122,6 @@
             this.updateMaterial();
         },
         clampOffset: function() {
-            // はみ出さないように制限をかける（トリミング枠の維持）
             const repeat = 1 / this.scaleFactor;
             const maxOffset = 1.0 - repeat;
             this.offsetX = Math.min(Math.max(this.offsetX, 0), maxOffset);
@@ -179,7 +173,7 @@
           el.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 400, easing: 'easeInOutQuad' });
           
           setTimeout(() => {
-            this.resetZoom(); // 画像が切り替わる時にズームと位置をリセット
+            this.resetZoom(); 
             
             this.index = (this.index + dir + this.data.srcs.length) % this.data.srcs.length;
             sessionStorage.setItem(this.storageKey, this.index); 
@@ -198,7 +192,7 @@
         }
       });
 
-      // 横向き対策（画面回転時の自動リロード）
+      // ▼▼▼ 横向き対策：ARエンジンの再構築 ▼▼▼
       window.addEventListener('orientationchange', () => {
         const loadingDiv = document.getElementById('loading');
         const loadingText = document.getElementById('loading-text');
@@ -212,15 +206,40 @@
     </script>
 
     <style>
-      /* ベースデザイン */
+      /* 完全固定のベースデザイン */
       html, body { 
-        margin: 0; padding: 0; width: 100vw; height: 100vh; 
+        margin: 0; padding: 0; width: 100%; height: 100%; 
         overflow: hidden; position: fixed; 
         font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; 
         background: #000; 
       }
       
-      /* ローディング画面 */
+      /* =========================================
+         カメラフレーム (太さ24pxのグラデーション枠)
+      ========================================= */
+      #camera-frame {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none; z-index: 7999; box-sizing: border-box;
+        padding: 24px; /* 枠の太さ */
+        background: radial-gradient(circle, rgba(58,58,58,0.9) 0%, rgba(0,0,0,1) 100%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+      }
+      #camera-vignette {
+        position: fixed; top: 24px; left: 24px; right: 24px; bottom: 24px;
+        box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
+        pointer-events: none; z-index: 7998;
+      }
+      .corner { position: absolute; width: 30px; height: 30px; border-color: rgba(255,255,255,0.4); border-style: solid; }
+      .top-left { top: 40px; left: 40px; border-width: 1px 0 0 1px; }
+      .top-right { top: 40px; right: 40px; border-width: 1px 1px 0 0; }
+      .bottom-left { bottom: 40px; left: 40px; border-width: 0 0 1px 1px; }
+      .bottom-right { bottom: 40px; right: 40px; border-width: 0 1px 1px 0; }
+
+      /* =========================================
+         ローディング画面
+      ========================================= */
       #loading { 
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
         background: radial-gradient(circle, #2a2a2a 0%, #000 100%); 
@@ -235,68 +254,94 @@
       #loading-text { margin-top: 25px; color: #fff; font-size: 11px; letter-spacing: 4px; font-weight: 300; opacity: 0.8; }
       @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-      /* スキャンガイド */
-      #scan-guide { 
-        position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
-        color: rgba(255,255,255,0.9); font-size: 13px; letter-spacing: 2px; 
+      /* 共通UIパーツ設定 */
+      .ui-layer { position: fixed; inset: 0; pointer-events: none; z-index: 9000; }
+      .scan-guide { 
+        position: absolute; color: rgba(255,255,255,0.9); font-size: 13px; letter-spacing: 2px; 
         background: rgba(0,0,0,0.5); padding: 12px 24px; border-radius: 30px;
         backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);
-        pointer-events: none; z-index: 8000; transition: opacity 0.5s ease; white-space: nowrap;
+        transition: opacity 0.5s ease; white-space: nowrap;
       }
-
-      /* 縦向き配置 */
-      #footer-frame { 
-        position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; 
-        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); 
-        display: flex; justify-content: center; align-items: flex-end; padding-bottom: 35px;
-        z-index: 9998; pointer-events: none; 
+      .controls-panel {
+        position: absolute; display: flex; align-items: center; gap: 20px;
+        background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        opacity: 0; pointer-events: none; transition: opacity 0.5s ease, transform 0.5s ease;
       }
-      .footer-text { color: #fff; font-size: 16px; letter-spacing: 6px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
-
-      #controls-panel {
-        position: fixed; bottom: 105px; left: 50%; transform: translateX(-50%);
-        display: flex; align-items: center; gap: 20px;
-        background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px);
-        padding: 10px 25px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.15);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.5s ease, transform 0.5s ease;
-      }
-      #controls-panel.active { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
-      
+      .controls-panel.active { opacity: 1; pointer-events: auto; }
       .ctrl-btn { background: none; border: none; outline: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; opacity: 0.8; transition: opacity 0.2s; }
       .ctrl-btn:active { opacity: 0.4; }
       .ctrl-btn svg { width: 22px; height: 22px; fill: white; }
       .ctrl-btn-stroke svg { fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .footer-frame { position: absolute; }
+      .footer-text { color: #fff; font-size: 16px; letter-spacing: 6px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
 
-      /* 横向き配置 */
-      @media screen and (orientation: landscape) {
-        #footer-frame {
-          bottom: 35px; top: auto; left: auto; right: 35px;
-          width: auto; height: auto; background: none; padding-bottom: 0;
+      /* =========================================
+         【1】縦向き専用レイアウト (Portrait UI)
+      ========================================= */
+      @media (orientation: portrait) {
+        #ui-landscape { display: none !important; }
+        #ui-portrait { display: block !important; }
+        
+        #ui-portrait .scan-guide { top: max(10dvh, 70px); left: 50%; transform: translateX(-50%); }
+        #ui-portrait .controls-panel { 
+            bottom: max(12dvh, 120px); left: 50%; 
+            transform: translateX(-50%) translateY(20px); /* 非表示時は少し下へ */
+            flex-direction: row; padding: 10px 25px; 
         }
-        .footer-text { letter-spacing: 4px; font-size: 14px; }
-        #controls-panel {
-          bottom: 50%; left: auto; right: 40px;
-          transform: translateY(50%) translateX(20px);
-          flex-direction: column; gap: 15px; padding: 25px 10px;
+        #ui-portrait .controls-panel.active { transform: translateX(-50%) translateY(0); }
+        #ui-portrait .footer-frame { bottom: max(5dvh, 40px); left: 50%; transform: translateX(-50%); }
+      }
+
+      /* =========================================
+         【2】横向き専用レイアウト (Landscape UI)
+      ========================================= */
+      @media (orientation: landscape) {
+        #ui-portrait { display: none !important; }
+        #ui-landscape { display: block !important; }
+        
+        #ui-landscape .scan-guide { top: max(8dvh, 50px); left: 50%; transform: translateX(-50%); }
+        #ui-landscape .controls-panel { 
+            top: 50%; right: max(6dvw, 50px); 
+            transform: translateY(-50%) translateX(20px); /* 非表示時は少し右へ */
+            flex-direction: column; padding: 25px 10px; gap: 15px;
         }
-        #controls-panel.active { transform: translateY(50%) translateX(0); }
-        #scan-guide { top: 40px; }
+        #ui-landscape .controls-panel.active { transform: translateY(-50%) translateX(0); }
+        #ui-landscape .footer-frame { bottom: max(8dvh, 40px); right: max(6dvw, 50px); }
       }
     </style>
   </head>
   <body>
 
-    <div id="loading"><div class="loader"></div><div id="loading-text">LOADING EXPERIENCE</div></div>
-    <div id="scan-guide">パネルを映してください</div>
-    
-    <div id="controls-panel">
-      <button class="ctrl-btn ctrl-btn-stroke" onclick="globalPrev()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
-      <button class="ctrl-btn" id="play-pause-btn" onclick="globalTogglePlay()"><svg id="icon-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg></button>
-      <button class="ctrl-btn ctrl-btn-stroke" onclick="globalNext()"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+    <div id="camera-frame"></div>
+    <div id="camera-vignette">
+        <div class="corner top-left"></div>
+        <div class="corner top-right"></div>
+        <div class="corner bottom-left"></div>
+        <div class="corner bottom-right"></div>
     </div>
 
-    <div id="footer-frame"><div class="footer-text">町屋の日</div></div>
+    <div id="loading"><div class="loader"></div><div id="loading-text">LOADING EXPERIENCE</div></div>
+    
+    <div id="ui-portrait" class="ui-layer">
+      <div class="scan-guide">パネルを映してください</div>
+      <div class="controls-panel">
+        <button class="ctrl-btn ctrl-btn-stroke" onclick="globalPrev()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+        <button class="ctrl-btn play-pause-btn" onclick="globalTogglePlay()"></button>
+        <button class="ctrl-btn ctrl-btn-stroke" onclick="globalNext()"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+      </div>
+      <div class="footer-frame"><div class="footer-text">町屋の日</div></div>
+    </div>
+
+    <div id="ui-landscape" class="ui-layer">
+      <div class="scan-guide">パネルを映してください</div>
+      <div class="controls-panel">
+        <button class="ctrl-btn ctrl-btn-stroke" onclick="globalPrev()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+        <button class="ctrl-btn play-pause-btn" onclick="globalTogglePlay()"></button>
+        <button class="ctrl-btn ctrl-btn-stroke" onclick="globalNext()"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+      </div>
+      <div class="footer-frame"><div class="footer-text">町屋の日</div></div>
+    </div>
 
     <a-scene 
       mindar-image="imageTargetSrc: ./targets.mind; uiError:yes; uiLoading:no; filterMinCF:0.0001; filterBeta: 0.001;" 
@@ -336,10 +381,11 @@
 
     <script>
       const loadingDiv = document.getElementById('loading');
-      const scanGuide = document.getElementById('scan-guide');
-      const controlsPanel = document.getElementById('controls-panel');
       const sceneEl = document.querySelector('a-scene');
-      const playPauseBtn = document.getElementById('play-pause-btn');
+      
+      const guides = document.querySelectorAll('.scan-guide');
+      const panels = document.querySelectorAll('.controls-panel');
+      const playPauseBtns = document.querySelectorAll('.play-pause-btn');
       
       const slide1 = document.getElementById('slideshow-1');
       const slide2 = document.getElementById('slideshow-2');
@@ -364,7 +410,11 @@
       // 再生状態の復元
       let savedPlayState = sessionStorage.getItem('globalIsPlaying');
       let shouldPlay = savedPlayState === null ? true : (savedPlayState === 'true');
+      
+      // 初期アイコンセット
+      playPauseBtns.forEach(btn => btn.innerHTML = shouldPlay ? iconPause : iconPlay);
 
+      // グローバル操作
       window.globalPrev = function() {
         if (window.activeSlideshowComponent) window.activeSlideshowComponent.changeSlide(-1);
       };
@@ -376,12 +426,12 @@
         
         if (window.activeSlideshowComponent.isPlaying) {
           window.activeSlideshowComponent.stopSlide();
-          playPauseBtn.innerHTML = iconPlay;
+          playPauseBtns.forEach(btn => btn.innerHTML = iconPlay);
           sessionStorage.setItem('globalIsPlaying', 'false');
           shouldPlay = false;
         } else {
           window.activeSlideshowComponent.startSlide();
-          playPauseBtn.innerHTML = iconPause;
+          playPauseBtns.forEach(btn => btn.innerHTML = iconPause);
           sessionStorage.setItem('globalIsPlaying', 'true');
           shouldPlay = true;
         }
@@ -393,28 +443,35 @@
           { el: document.querySelector('[mindar-image-target="targetIndex: 2"]'), content: slide3 }
       ];
 
+      let activeTargets = 0;
       targets.forEach(t => {
           if(!t.el) return;
           
           t.el.addEventListener('targetFound', () => {
-              scanGuide.style.opacity = 0; 
-              controlsPanel.classList.add('active'); 
+              activeTargets++;
+              guides.forEach(g => g.style.opacity = 0); 
+              panels.forEach(p => p.classList.add('active')); 
               
               if (t.content && t.content.components['auto-slideshow']) {
                   window.activeSlideshowComponent = t.content.components['auto-slideshow'];
                   
                   if (shouldPlay) {
                       window.activeSlideshowComponent.startSlide();
-                      playPauseBtn.innerHTML = iconPause;
+                      playPauseBtns.forEach(btn => btn.innerHTML = iconPause);
                   } else {
-                      playPauseBtn.innerHTML = iconPlay;
+                      playPauseBtns.forEach(btn => btn.innerHTML = iconPlay);
                   }
               }
           });
           
           t.el.addEventListener('targetLost', () => {
-              scanGuide.style.opacity = 1; 
-              controlsPanel.classList.remove('active'); 
+              activeTargets--;
+              if(activeTargets < 0) activeTargets = 0;
+              
+              if(activeTargets === 0) {
+                guides.forEach(g => g.style.opacity = 1); 
+                panels.forEach(p => p.classList.remove('active')); 
+              }
               
               if (t.content && t.content.components['auto-slideshow']) {
                   t.content.components['auto-slideshow'].stopSlide();
