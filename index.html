@@ -77,22 +77,16 @@
         }
       });
 
-      // ▼▼▼ 横向き対策：解像度の再取得（自動リロード） ▼▼▼
+      // 横向き対策（画面回転時の自動リロード）
       window.addEventListener('orientationchange', () => {
         const loadingDiv = document.getElementById('loading');
         const loadingText = document.getElementById('loading-text');
-        
-        // 回転した瞬間に暗転させ、「カメラを調整中」であることを伝える
         if(loadingDiv && loadingText) {
             loadingDiv.style.display = 'flex';
             loadingDiv.style.opacity = '1';
             loadingText.innerText = "ADJUSTING CAMERA...";
         }
-
-        // ブラウザの回転処理が落ち着くのを待ってからリロードし、新しい向きのカメラを開き直す
-        setTimeout(() => {
-            window.location.reload();
-        }, 600);
+        setTimeout(() => { window.location.reload(); }, 600);
       });
     </script>
 
@@ -105,6 +99,22 @@
         background: #000; 
       }
       
+      /* ▼▼▼ リッチな黒枠（ファインダー風演出） ▼▼▼ */
+      #camera-frame {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        /* マットな黒の太枠 */
+        border: 12px solid rgba(15, 15, 15, 0.95);
+        /* 画面端に落ちる自然な影（ビネット効果） */
+        box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
+        pointer-events: none; z-index: 7999; box-sizing: border-box;
+      }
+      /* 四隅のフォーカスデザイン */
+      .corner { position: absolute; width: 25px; height: 25px; border-color: rgba(255,255,255,0.3); border-style: solid; }
+      .top-left { top: 20px; left: 20px; border-width: 1px 0 0 1px; }
+      .top-right { top: 20px; right: 20px; border-width: 1px 1px 0 0; }
+      .bottom-left { bottom: 20px; left: 20px; border-width: 0 0 1px 1px; }
+      .bottom-right { bottom: 20px; right: 20px; border-width: 0 1px 1px 0; }
+
       /* ローディング画面 */
       #loading { 
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -117,52 +127,73 @@
         border-top: 1px solid #fff; border-radius: 50%; 
         animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite; 
       }
-      #loading-text { 
-        margin-top: 25px; color: #fff; font-size: 11px; letter-spacing: 4px; font-weight: 300; opacity: 0.8;
-      }
+      #loading-text { margin-top: 25px; color: #fff; font-size: 11px; letter-spacing: 4px; font-weight: 300; opacity: 0.8; }
       @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
       /* スキャンガイド */
       #scan-guide { 
-        position: fixed; top: 40px; left: 50%; transform: translateX(-50%);
+        position: fixed; top: 50px; left: 50%; transform: translateX(-50%);
         color: rgba(255,255,255,0.9); font-size: 13px; letter-spacing: 2px; 
         background: rgba(0,0,0,0.5); padding: 12px 24px; border-radius: 30px;
         backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);
         pointer-events: none; z-index: 8000; transition: opacity 0.5s ease; white-space: nowrap;
       }
 
-      /* フッター */
+      /* 縦向き用のデフォルト配置（フッターとコントロール） */
       #footer-frame { 
-        position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; 
+        position: fixed; bottom: 0; left: 0; width: 100%; height: 90px; 
         background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); 
-        display: flex; justify-content: center; align-items: flex-end; padding-bottom: 20px;
+        display: flex; justify-content: center; align-items: flex-end; padding-bottom: 25px;
         z-index: 9998; pointer-events: none; 
       }
       .footer-text { color: #fff; font-size: 16px; letter-spacing: 6px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
 
-      /* 再生コントローラー */
       #controls-panel {
-        position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%);
+        position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%);
         display: flex; align-items: center; gap: 20px;
         background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px);
         padding: 10px 25px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.15);
         box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.5s ease, transform 0.5s ease;
       }
-      #controls-panel.active {
-        opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0);
-      }
-      .ctrl-btn {
-        background: none; border: none; outline: none; cursor: pointer;
-        padding: 5px; display: flex; align-items: center; justify-content: center;
-        opacity: 0.8; transition: opacity 0.2s;
-      }
+      #controls-panel.active { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+      
+      .ctrl-btn { background: none; border: none; outline: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; opacity: 0.8; transition: opacity 0.2s; }
       .ctrl-btn:active { opacity: 0.4; }
       .ctrl-btn svg { width: 22px; height: 22px; fill: white; }
       .ctrl-btn-stroke svg { fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+
+      /* ▼▼▼ スマホ横向き時のレイアウト（右側へ寄せる） ▼▼▼ */
+      @media screen and (orientation: landscape) {
+        #footer-frame {
+          bottom: 25px; top: auto; left: auto; right: 25px;
+          width: auto; height: auto; background: none; padding-bottom: 0;
+        }
+        .footer-text {
+          letter-spacing: 4px; font-size: 14px;
+        }
+        #controls-panel {
+          bottom: 50%; left: auto; right: 30px;
+          /* 右側に隠しておき、activeでスライドインさせる */
+          transform: translateY(50%) translateX(20px);
+          flex-direction: column; gap: 15px; padding: 25px 10px;
+        }
+        #controls-panel.active {
+          transform: translateY(50%) translateX(0);
+        }
+        #scan-guide { top: 30px; }
+      }
     </style>
   </head>
   <body>
+
+    <div id="camera-frame">
+        <div class="corner top-left"></div>
+        <div class="corner top-right"></div>
+        <div class="corner bottom-left"></div>
+        <div class="corner bottom-right"></div>
+    </div>
 
     <div id="loading"><div class="loader"></div><div id="loading-text">LOADING EXPERIENCE</div></div>
     <div id="scan-guide">パネルを映してください</div>
@@ -184,7 +215,7 @@
     <a-scene 
       mindar-image="imageTargetSrc: ./targets.mind; uiError:yes; uiLoading:no; filterMinCF:0.0001; filterBeta: 0.001;" 
       color-space="sRGB" 
-      renderer="colorManagement: true; antialias: true; highRefreshRate: true;" 
+      renderer="colorManagement: true; antialias: true;" 
       vr-mode-ui="enabled: false" 
       device-orientation-permission-ui="enabled: false">
       
