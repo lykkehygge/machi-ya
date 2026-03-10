@@ -2,14 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>町家の日 AR Experience</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>町屋の日 AR Experience</title>
     
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     
     <script>
-      // ▼▼▼ スライドショーコンポーネント (サイズ自動調整・中央配置機能付き) ▼▼▼
+      // ▼▼▼ スライドショーコンポーネント (自動中央配置＆フェード機能) ▼▼▼
       AFRAME.registerComponent('auto-slideshow', {
         schema: { 
           srcs: { type: 'array' }, 
@@ -21,7 +21,6 @@
           this.index = 0; 
           this.timer = null;
           
-          // 初回読み込み時のサイズ調整
           const img = document.querySelector(this.data.srcs[0]);
           if (img.complete) {
             this.adjustSize(img);
@@ -30,17 +29,15 @@
           }
         },
         adjustSize: function(img) {
-          // 画像を最大 1.0 x 1.0 の枠内に収めつつ、中心に配置するための計算
+          // 画像の縦横比を計算し、ターゲット（幅1.0）の中心に常に配置する
           const w = img.naturalWidth;
           const h = img.naturalHeight;
           const maxSize = 1.0; 
           
           if (w > h) {
-            // 横長画像の場合
             this.el.setAttribute('width', maxSize);
             this.el.setAttribute('height', maxSize * (h / w));
           } else {
-            // 縦長・正方形画像の場合
             this.el.setAttribute('width', maxSize * (w / h));
             this.el.setAttribute('height', maxSize);
           }
@@ -57,15 +54,12 @@
         nextSlide: function () {
           const el = this.el;
           
-          // ふわっと消える
           el.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 800, easing: 'easeInOutQuad' });
           
           setTimeout(() => {
-            // 次の画像へ切り替え
             this.index = (this.index + 1) % this.data.srcs.length;
             el.setAttribute('src', this.data.srcs[this.index]);
             
-            // 切り替えた画像のサイズを中心合わせで調整
             const img = document.querySelector(this.data.srcs[this.index]);
             if(img.complete) {
                 this.adjustSize(img);
@@ -73,17 +67,30 @@
                 img.onload = () => this.adjustSize(img);
             }
             
-            // ふわっと現れる
             el.removeAttribute('animation');
             el.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 800, easing: 'easeInOutQuad' });
           }, 800);
         }
       });
+
+      // ▼▼▼ スマホ縦横回転時の表示崩れ修正 ▼▼▼
+      window.addEventListener('orientationchange', () => {
+        // 回転直後は画面サイズが確定していないため、少し遅らせてからリサイズを強制実行
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 200);
+      });
     </script>
 
     <style>
-      /* 全体のベースデザイン：シンプル・高級感 */
-      body { margin: 0; overflow: hidden; font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; background: #000; }
+      /* 縦横回転対応の厳格なCSSリセット */
+      html, body { 
+        margin: 0; padding: 0; 
+        width: 100%; height: 100%; 
+        overflow: hidden; position: fixed; /* iOSのスクロールバウンス防止 */
+        font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; 
+        background: #000; 
+      }
       
       /* ローディング画面 */
       #loading { 
@@ -104,34 +111,34 @@
       }
       @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-      /* スキャンガイド (ターゲット認識中は消えます) */
+      /* スキャンガイド (文言変更) */
       #scan-guide { 
         position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
-        color: rgba(255,255,255,0.9); font-size: 13px; letter-spacing: 2px; 
-        background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 30px;
+        color: rgba(255,255,255,0.9); font-size: 14px; letter-spacing: 2px; 
+        background: rgba(0,0,0,0.5); padding: 12px 24px; border-radius: 30px;
         backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);
         pointer-events: none; z-index: 8000; transition: opacity 0.5s ease;
+        white-space: nowrap;
       }
 
-      /* フッター */
+      /* フッター (リンク削除・文言変更) */
       #footer-frame { 
-        position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; 
+        position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; 
         background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); 
         display: flex; justify-content: center; align-items: center; 
-        z-index: 9999; cursor: pointer; transition: opacity 0.3s;
+        z-index: 9999; pointer-events: none; /* タッチ無効化 */
       }
       .footer-text { 
-        color: #fff; font-size: 11px; letter-spacing: 2px; 
-        border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 3px; 
-        opacity: 0.8;
+        color: #fff; font-size: 16px; letter-spacing: 6px; 
+        font-weight: normal; text-shadow: 0 2px 6px rgba(0,0,0,0.8);
       }
     </style>
   </head>
   <body>
 
     <div id="loading"><div class="loader"></div><div id="loading-text">LOADING EXPERIENCE</div></div>
-    <div id="scan-guide">建物を映してください</div>
-    <div id="footer-frame"><div class="footer-text">Tap to Open Website</div></div>
+    <div id="scan-guide">パネルを映してください</div>
+    <div id="footer-frame"><div class="footer-text">町屋の日</div></div>
 
     <a-scene 
       mindar-image="imageTargetSrc: ./targets.mind; uiError:yes; uiLoading:no; filterMinCF:0.0001; filterBeta: 0.001;" 
@@ -157,39 +164,21 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity scale="0.9 0.9 0.9">
-            
-            <a-plane color="#000" opacity="0.5" width="1.15" height="1.15" position="0.04 -0.04 -0.02"></a-plane>
-            
-            <a-plane color="#151515" opacity="0.95" width="1.1" height="1.1" position="0 0 -0.01"></a-plane>
-            
-            <a-image id="slideshow-1" position="0 0 0" 
-                     auto-slideshow="srcs: #s1-1, #s1-2, #s1-3; interval: 3500">
-            </a-image>
-
-        </a-entity>
+        <a-image id="slideshow-1" position="0 0 0" 
+                 auto-slideshow="srcs: #s1-1, #s1-2, #s1-3; interval: 3500">
+        </a-image>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-entity scale="0.9 0.9 0.9">
-            <a-plane color="#000" opacity="0.5" width="1.15" height="1.15" position="0.04 -0.04 -0.02"></a-plane>
-            <a-plane color="#151515" opacity="0.95" width="1.1" height="1.1" position="0 0 -0.01"></a-plane>
-
-            <a-image id="slideshow-2" position="0 0 0" 
-                     auto-slideshow="srcs: #s2-1, #s2-2, #s2-3; interval: 3500">
-            </a-image>
-        </a-entity>
+        <a-image id="slideshow-2" position="0 0 0" 
+                 auto-slideshow="srcs: #s2-1, #s2-2, #s2-3; interval: 3500">
+        </a-image>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 2">
-        <a-entity scale="0.9 0.9 0.9">
-            <a-plane color="#000" opacity="0.5" width="1.15" height="1.15" position="0.04 -0.04 -0.02"></a-plane>
-            <a-plane color="#151515" opacity="0.95" width="1.1" height="1.1" position="0 0 -0.01"></a-plane>
-
-            <a-image id="slideshow-3" position="0 0 0" 
-                     auto-slideshow="srcs: #s3-1, #s3-2, #s3-3; interval: 3500">
-            </a-image>
-        </a-entity>
+        <a-image id="slideshow-3" position="0 0 0" 
+                 auto-slideshow="srcs: #s3-1, #s3-2, #s3-3; interval: 3500">
+        </a-image>
       </a-entity>
 
     </a-scene>
@@ -197,7 +186,6 @@
     <script>
       const loadingDiv = document.getElementById('loading');
       const scanGuide = document.getElementById('scan-guide');
-      const footerFrame = document.getElementById('footer-frame');
       const sceneEl = document.querySelector('a-scene');
       
       const slide1 = document.getElementById('slideshow-1');
@@ -207,7 +195,7 @@
       // ロード完了処理
       sceneEl.addEventListener('arReady', () => { hideLoading(); });
       sceneEl.addEventListener('arError', () => { hideLoading(); alert("カメラにアクセスできませんでした。"); });
-      setTimeout(() => { hideLoading(); }, 10000); // 安全装置(10秒で強制非表示)
+      setTimeout(() => { hideLoading(); }, 10000);
 
       function hideLoading() {
         if(loadingDiv.style.display !== 'none') {
@@ -216,13 +204,12 @@
         }
       }
 
-      // 認識状態の管理（いずれかのターゲットが見つかればガイドを非表示）
+      // ガイド表示の切り替え
       let activeTargets = 0;
       function updateGuideVisibility() {
           scanGuide.style.opacity = activeTargets > 0 ? 0 : 1;
       }
 
-      // 各ターゲットのイベント管理
       const targets = [
           { el: document.querySelector('[mindar-image-target="targetIndex: 0"]'), content: slide1 },
           { el: document.querySelector('[mindar-image-target="targetIndex: 1"]'), content: slide2 },
@@ -248,11 +235,6 @@
                   t.content.components['auto-slideshow'].pause();
               }
           });
-      });
-
-      // フッタータップ時のリンク遷移
-      footerFrame.addEventListener('click', () => {
-        window.open('https://lykke-hygge-2.myshopify.com/', '_blank'); 
       });
     </script>
   </body>
