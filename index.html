@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     
     <script>
-      // ▼▼▼ スライドショーコンポーネント (手動操作・自動調整機能付き) ▼▼▼
+      // ▼▼▼ スライドショーコンポーネント ▼▼▼
       AFRAME.registerComponent('auto-slideshow', {
         schema: { 
           srcs: { type: 'array' }, 
@@ -21,7 +21,7 @@
           this.index = 0; 
           this.timer = null;
           this.isPlaying = false;
-          this.isAnimating = false; // 連打防止用
+          this.isAnimating = false; 
           
           const img = document.querySelector(this.data.srcs[0]);
           if (img.complete) { this.adjustSize(img); } 
@@ -49,12 +49,10 @@
           this.timer = null;
           this.isPlaying = false;
         },
-        // 方向(dir): 1で次へ、-1で戻る
         changeSlide: function (dir) {
           if (this.isAnimating) return;
           this.isAnimating = true;
           
-          // 再生中に手動操作された場合、タイマーをリセットして再開
           if (this.isPlaying) {
             clearInterval(this.timer);
             this.timer = setInterval(() => { this.changeSlide(1); }, this.data.interval);
@@ -64,7 +62,6 @@
           el.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 400, easing: 'easeInOutQuad' });
           
           setTimeout(() => {
-            // マイナス値対応のインデックス計算
             this.index = (this.index + dir + this.data.srcs.length) % this.data.srcs.length;
             el.setAttribute('src', this.data.srcs[this.index]);
             
@@ -75,22 +72,32 @@
             el.removeAttribute('animation');
             el.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 400, easing: 'easeInOutQuad' });
             
-            setTimeout(() => { this.isAnimating = false; }, 400); // アニメーション終了
+            setTimeout(() => { this.isAnimating = false; }, 400); 
           }, 400);
         }
       });
 
-      // ▼▼▼ スマホ横向き（画面回転）時のAR認識ズレを強力に補正 ▼▼▼
+      // ▼▼▼ 横向き対策：解像度の再取得（自動リロード） ▼▼▼
       window.addEventListener('orientationchange', () => {
-        // 回転直後はブラウザのサイズ計算が遅れるため、時間差で複数回リサイズイベントを発火させます
-        [100, 300, 500].forEach(delay => {
-            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, delay);
-        });
+        const loadingDiv = document.getElementById('loading');
+        const loadingText = document.getElementById('loading-text');
+        
+        // 回転した瞬間に暗転させ、「カメラを調整中」であることを伝える
+        if(loadingDiv && loadingText) {
+            loadingDiv.style.display = 'flex';
+            loadingDiv.style.opacity = '1';
+            loadingText.innerText = "ADJUSTING CAMERA...";
+        }
+
+        // ブラウザの回転処理が落ち着くのを待ってからリロードし、新しい向きのカメラを開き直す
+        setTimeout(() => {
+            window.location.reload();
+        }, 600);
       });
     </script>
 
     <style>
-      /* 厳格なCSSリセットとベースデザイン */
+      /* ベースデザイン */
       html, body { 
         margin: 0; padding: 0; width: 100vw; height: 100vh; 
         overflow: hidden; position: fixed; 
@@ -98,11 +105,12 @@
         background: #000; 
       }
       
+      /* ローディング画面 */
       #loading { 
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
         background: radial-gradient(circle, #2a2a2a 0%, #000 100%); 
         z-index: 99999; display: flex; flex-direction: column; 
-        justify-content: center; align-items: center; transition: opacity 0.8s ease-out; 
+        justify-content: center; align-items: center; transition: opacity 0.5s ease-out; 
       }
       .loader { 
         width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.1); 
@@ -132,7 +140,7 @@
       }
       .footer-text { color: #fff; font-size: 16px; letter-spacing: 6px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
 
-      /* ▼▼▼ オシャレな再生コントローラー ▼▼▼ */
+      /* 再生コントローラー */
       #controls-panel {
         position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%);
         display: flex; align-items: center; gap: 20px;
@@ -221,7 +229,7 @@
       const slide2 = document.getElementById('slideshow-2');
       const slide3 = document.getElementById('slideshow-3');
 
-      // アイコンのSVGデータ
+      // SVGアイコン
       const iconPlay = '<svg viewBox="0 0 24 24"><path d="M7 4V20L19 12L7 4Z"></path></svg>';
       const iconPause = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
 
@@ -232,13 +240,12 @@
       function hideLoading() {
         if(loadingDiv.style.display !== 'none') {
             loadingDiv.style.opacity = 0;
-            setTimeout(() => { loadingDiv.style.display = 'none'; }, 800);
+            setTimeout(() => { loadingDiv.style.display = 'none'; }, 500);
         }
       }
 
       let activeSlideshowComponent = null;
 
-      // コントロールパネルの操作関数
       window.globalPrev = function() {
         if (activeSlideshowComponent) activeSlideshowComponent.changeSlide(-1);
       };
@@ -267,19 +274,19 @@
           if(!t.el) return;
           
           t.el.addEventListener('targetFound', () => {
-              scanGuide.style.opacity = 0; // ガイドを隠す
-              controlsPanel.classList.add('active'); // コントロール表示
+              scanGuide.style.opacity = 0; 
+              controlsPanel.classList.add('active'); 
               
               if (t.content && t.content.components['auto-slideshow']) {
                   activeSlideshowComponent = t.content.components['auto-slideshow'];
                   activeSlideshowComponent.startSlide();
-                  playPauseBtn.innerHTML = iconPause; // 再生中アイコンにする
+                  playPauseBtn.innerHTML = iconPause; 
               }
           });
           
           t.el.addEventListener('targetLost', () => {
-              scanGuide.style.opacity = 1; // ガイドを表示
-              controlsPanel.classList.remove('active'); // コントロール隠す
+              scanGuide.style.opacity = 1; 
+              controlsPanel.classList.remove('active'); 
               
               if (t.content && t.content.components['auto-slideshow']) {
                   t.content.components['auto-slideshow'].stopSlide();
