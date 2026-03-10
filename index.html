@@ -9,17 +9,41 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     
     <script>
-      // ▼▼▼ スライドショーコンポーネント (フェードアニメーション付き) ▼▼▼
+      // ▼▼▼ スライドショーコンポーネント (サイズ自動調整・中央配置機能付き) ▼▼▼
       AFRAME.registerComponent('auto-slideshow', {
         schema: { 
           srcs: { type: 'array' }, 
-          interval: { type: 'number', default: 3500 } // 3.5秒ごとに切り替え
+          interval: { type: 'number', default: 3500 }
         },
         init: function () {
           this.el.setAttribute('src', this.data.srcs[0]);
           this.el.setAttribute('material', 'transparent: true; opacity: 1; shader: flat;');
           this.index = 0; 
           this.timer = null;
+          
+          // 初回読み込み時のサイズ調整
+          const img = document.querySelector(this.data.srcs[0]);
+          if (img.complete) {
+            this.adjustSize(img);
+          } else {
+            img.onload = () => this.adjustSize(img);
+          }
+        },
+        adjustSize: function(img) {
+          // 画像を最大 1.0 x 1.0 の枠内に収めつつ、中心に配置するための計算
+          const w = img.naturalWidth;
+          const h = img.naturalHeight;
+          const maxSize = 1.0; 
+          
+          if (w > h) {
+            // 横長画像の場合
+            this.el.setAttribute('width', maxSize);
+            this.el.setAttribute('height', maxSize * (h / w));
+          } else {
+            // 縦長・正方形画像の場合
+            this.el.setAttribute('width', maxSize * (w / h));
+            this.el.setAttribute('height', maxSize);
+          }
         },
         play: function() {
           if (this.timer) return;
@@ -33,7 +57,7 @@
         nextSlide: function () {
           const el = this.el;
           
-          // ふわっと消える (0.8秒)
+          // ふわっと消える
           el.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 800, easing: 'easeInOutQuad' });
           
           setTimeout(() => {
@@ -41,14 +65,15 @@
             this.index = (this.index + 1) % this.data.srcs.length;
             el.setAttribute('src', this.data.srcs[this.index]);
             
-            // 画像の縦横比を自動調整
+            // 切り替えた画像のサイズを中心合わせで調整
             const img = document.querySelector(this.data.srcs[this.index]);
-            if(img && img.naturalWidth) {
-                const ratio = img.naturalHeight / img.naturalWidth;
-                el.setAttribute('height', ratio);
+            if(img.complete) {
+                this.adjustSize(img);
+            } else {
+                img.onload = () => this.adjustSize(img);
             }
             
-            // ふわっと現れる (0.8秒)
+            // ふわっと現れる
             el.removeAttribute('animation');
             el.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 800, easing: 'easeInOutQuad' });
           }, 800);
@@ -132,44 +157,38 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity scale="0.8 0.8 0.8">
-            <a-plane color="#000" opacity="0.4" width="1.05" height="0.8" position="0.02 -0.02 -0.01"></a-plane>
+        <a-entity scale="0.9 0.9 0.9">
             
-            <a-image id="slideshow-1" position="0 0 0" width="1" height="0.75" 
+            <a-plane color="#000" opacity="0.5" width="1.15" height="1.15" position="0.04 -0.04 -0.02"></a-plane>
+            
+            <a-plane color="#151515" opacity="0.95" width="1.1" height="1.1" position="0 0 -0.01"></a-plane>
+            
+            <a-image id="slideshow-1" position="0 0 0" 
                      auto-slideshow="srcs: #s1-1, #s1-2, #s1-3; interval: 3500">
             </a-image>
-            
-            <a-text value="SCENE 1" align="center" position="0 -0.55 0" width="4" color="#fff" 
-                    font="roboto" letter-spacing="2" shader="msdf" negate="false"
-                    text="shadowColor: #000; shadowBlur: 3; shadowOffsetX: 1; shadowOffsetY: 1;"></a-text>
+
         </a-entity>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-entity scale="0.8 0.8 0.8">
-            <a-plane color="#000" opacity="0.4" width="1.05" height="0.8" position="0.02 -0.02 -0.01"></a-plane>
+        <a-entity scale="0.9 0.9 0.9">
+            <a-plane color="#000" opacity="0.5" width="1.15" height="1.15" position="0.04 -0.04 -0.02"></a-plane>
+            <a-plane color="#151515" opacity="0.95" width="1.1" height="1.1" position="0 0 -0.01"></a-plane>
 
-            <a-image id="slideshow-2" position="0 0 0" width="1" height="0.75" 
+            <a-image id="slideshow-2" position="0 0 0" 
                      auto-slideshow="srcs: #s2-1, #s2-2, #s2-3; interval: 3500">
             </a-image>
-            
-            <a-text value="SCENE 2" align="center" position="0 -0.55 0" width="4" color="#fff" 
-                    font="roboto" letter-spacing="2" shader="msdf" negate="false"
-                    text="shadowColor: #000; shadowBlur: 3; shadowOffsetX: 1; shadowOffsetY: 1;"></a-text>
         </a-entity>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 2">
-        <a-entity scale="0.8 0.8 0.8">
-            <a-plane color="#000" opacity="0.4" width="1.05" height="0.8" position="0.02 -0.02 -0.01"></a-plane>
+        <a-entity scale="0.9 0.9 0.9">
+            <a-plane color="#000" opacity="0.5" width="1.15" height="1.15" position="0.04 -0.04 -0.02"></a-plane>
+            <a-plane color="#151515" opacity="0.95" width="1.1" height="1.1" position="0 0 -0.01"></a-plane>
 
-            <a-image id="slideshow-3" position="0 0 0" width="1" height="0.75" 
+            <a-image id="slideshow-3" position="0 0 0" 
                      auto-slideshow="srcs: #s3-1, #s3-2, #s3-3; interval: 3500">
             </a-image>
-            
-            <a-text value="SCENE 3" align="center" position="0 -0.55 0" width="4" color="#fff" 
-                    font="roboto" letter-spacing="2" shader="msdf" negate="false"
-                    text="shadowColor: #000; shadowBlur: 3; shadowOffsetX: 1; shadowOffsetY: 1;"></a-text>
         </a-entity>
       </a-entity>
 
