@@ -61,18 +61,38 @@
         }
       });
 
-      // ▼▼▼ スライドショーコンポーネント (ズーム＆移動機能付き) ▼▼▼
+      // ▼▼▼ スライドショーコンポーネント (プレフィックス自動取得・ズーム＆移動機能付き) ▼▼▼
       AFRAME.registerComponent('auto-slideshow', {
         schema: { 
-          srcs: { type: 'array' }, 
+          prefix: { type: 'string' }, // 's1', 's2', 's3' などを指定
           interval: { type: 'number', default: 3500 }
         },
         init: function () {
+          // --- 画像リストの自動構築 ---
+          // 指定されたプレフィックス(例: "s1-")で始まる画像要素を全て取得
+          const imgs = Array.from(document.querySelectorAll(`img[id^="${this.data.prefix}-"]`));
+          
+          // IDの数字部分で正しくソートする (s1-2の次にs1-10が来るようにする)
+          imgs.sort((a, b) => {
+            const numA = parseInt(a.id.replace(`${this.data.prefix}-`, ''), 10);
+            const numB = parseInt(b.id.replace(`${this.data.prefix}-`, ''), 10);
+            return numA - numB;
+          });
+          
+          this.srcArray = imgs.map(img => '#' + img.id);
+
+          // 保存されたインデックスの取得
           this.storageKey = 'slide_index_' + this.el.id;
           const savedIndex = sessionStorage.getItem(this.storageKey);
           this.index = savedIndex !== null ? parseInt(savedIndex, 10) : 0;
           
-          this.el.setAttribute('src', this.data.srcs[this.index]);
+          // 万が一要素数が減っていた場合のフォールバック
+          if (this.index >= this.srcArray.length) { this.index = 0; }
+          
+          // 最初の画像を設定
+          if (this.srcArray.length > 0) {
+            this.el.setAttribute('src', this.srcArray[this.index]);
+          }
           this.el.setAttribute('material', { shader: 'flat', transparent: true, opacity: 1 });
           
           this.timer = null;
@@ -86,9 +106,11 @@
           this.el.sceneEl.addEventListener('twofingermove', this.handleZoom.bind(this));
           this.el.sceneEl.addEventListener('onefingermove', this.handlePan.bind(this));
           
-          const img = document.querySelector(this.data.srcs[this.index]);
-          if (img.complete) { this.adjustSize(img); } 
-          else { img.onload = () => this.adjustSize(img); }
+          if (this.srcArray.length > 0) {
+            const img = document.querySelector(this.srcArray[this.index]);
+            if (img.complete) { this.adjustSize(img); } 
+            else { img.onload = () => this.adjustSize(img); }
+          }
         },
         handleZoom: function(e) {
             if (window.activeSlideshowComponent !== this) return;
@@ -138,18 +160,15 @@
             this.offsetY = 0;
             this.updateMaterial();
         },
-        // ▼▼▼ パネル幅いっぱいまでピッタリ広げる計算 ▼▼▼
         adjustSize: function(img) {
           const w = img.naturalWidth;
           const h = img.naturalHeight;
           
-          // ARエンジンではターゲットの幅が「1.0」として扱われます。
-          // 幅を1.0に固定し、画像の比率に合わせて高さを設定することで、ターゲットいっぱいにピッタリ表示させます。
           this.el.setAttribute('width', 1.0);
           this.el.setAttribute('height', h / w);
         },
         startSlide: function() {
-          if (this.timer) return;
+          if (this.timer || this.srcArray.length <= 1) return;
           this.isPlaying = true;
           this.timer = setInterval(() => { this.changeSlide(1); }, this.data.interval);
         },
@@ -159,7 +178,7 @@
           this.isPlaying = false;
         },
         changeSlide: function (dir) {
-          if (this.isAnimating) return;
+          if (this.isAnimating || this.srcArray.length <= 1) return;
           this.isAnimating = true;
           
           if (this.isPlaying) {
@@ -173,12 +192,12 @@
           setTimeout(() => {
             this.resetZoom(); 
             
-            this.index = (this.index + dir + this.data.srcs.length) % this.data.srcs.length;
+            this.index = (this.index + dir + this.srcArray.length) % this.srcArray.length;
             sessionStorage.setItem(this.storageKey, this.index); 
             
-            el.setAttribute('src', this.data.srcs[this.index]);
+            el.setAttribute('src', this.srcArray[this.index]);
             
-            const img = document.querySelector(this.data.srcs[this.index]);
+            const img = document.querySelector(this.srcArray[this.index]);
             if(img.complete) { this.adjustSize(img); } 
             else { img.onload = () => this.adjustSize(img); }
             
@@ -421,15 +440,15 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-image id="slideshow-1" position="0 0 0" auto-slideshow="srcs: #s1-1, #s1-2, #s1-3; interval: 3500"></a-image>
+        <a-image id="slideshow-1" position="0 0 0" auto-slideshow="prefix: s1; interval: 3500"></a-image>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-image id="slideshow-2" position="0 0 0" auto-slideshow="srcs: #s2-1, #s2-2, #s2-3; interval: 3500"></a-image>
+        <a-image id="slideshow-2" position="0 0 0" auto-slideshow="prefix: s2; interval: 3500"></a-image>
       </a-entity>
 
       <a-entity mindar-image-target="targetIndex: 2">
-        <a-image id="slideshow-3" position="0 0 0" auto-slideshow="srcs: #s3-1, #s3-2, #s3-3; interval: 3500"></a-image>
+        <a-image id="slideshow-3" position="0 0 0" auto-slideshow="prefix: s3; interval: 3500"></a-image>
       </a-entity>
 
     </a-scene>
