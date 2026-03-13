@@ -65,7 +65,8 @@
       AFRAME.registerComponent('auto-slideshow', {
         schema: { 
           prefix: { type: 'string' }, // 's1', 's2', 's3' などを指定
-          interval: { type: 'number', default: 3500 }
+          interval: { type: 'number', default: 3500 },
+          targetAspectRatio: { type: 'number', default: 1.65 } // ★日本の名刺のアスペクト比(幅/高さ)のデフォルト値
         },
         init: function () {
           // --- 画像リストの自動構築 ---
@@ -160,12 +161,28 @@
             this.offsetY = 0;
             this.updateMaterial();
         },
+        // ▼▼▼ 【修正】画像をターゲット(名刺)の高さ内にピッタリ収める計算 ▼▼▼
         adjustSize: function(img) {
           const w = img.naturalWidth;
           const h = img.naturalHeight;
+          const imgRatio = w / h; // 画像のアスペクト比(幅/高さ)
+          const targetRatio = this.data.targetAspectRatio; // ターゲットのアスペクト比(幅/高さ)
           
-          this.el.setAttribute('width', 1.0);
-          this.el.setAttribute('height', h / w);
+          // ARエンジンではターゲットの幅が「1.0」として扱われます。
+          // ターゲットの高さは「1.0 / targetRatio」となります。
+
+          if (imgRatio > targetRatio) {
+            // 【横向き画像】ターゲットよりも横長(例: 16:9)の場合
+            // -> 横幅をターゲットいっぱい(1.0)にする。高さは自動的にターゲット内に収まる。
+            this.el.setAttribute('width', 1.0);
+            this.el.setAttribute('height', 1.0 / imgRatio);
+          } else {
+            // 【縦向き画像・正方形など】ターゲットと同じか、ターゲットよりも縦長の場合
+            // -> 縦幅をターゲットの高さ(1.0 / targetRatio)に固定する。横幅は縮小されて収まる。
+            const targetHeight = 1.0 / targetRatio;
+            this.el.setAttribute('height', targetHeight);
+            this.el.setAttribute('width', targetHeight * imgRatio);
+          }
         },
         startSlide: function() {
           if (this.timer || this.srcArray.length <= 1) return;
