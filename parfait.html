@@ -11,7 +11,7 @@
    gtag('config', 'G-0LLZ5ZXX9P'); 
  </script> 
 
-   <meta charset="UTF-8">
+   <meta charset="UTF-8">d 
    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     
    <title>French LABO. (フレンチラボ) | 姫路・野里のフレンチレストラン・オーベルジュ</title> 
@@ -294,9 +294,18 @@ center !important; font-weight: 700 !important; letter-spacing: 0
         
        .modal-content { padding: 30px 20px; } 
      } 
+
+     .floating-insta { position: fixed; top: 20px; right: 20px; z-index: 900; width: 45px; transition: opacity 0.3s; } 
+     .floating-insta:hover { opacity: 0.7; } 
+     .floating-insta img { width: 100%; height: auto; display: block; } 
+     @media (max-width: 767px) { .floating-insta { width: 35px; top: 15px; right: 15px; } } 
    </style> 
  </head> 
  <body> 
+
+   <a href="https://www.instagram.com/french__labo/" target="_blank" rel="noopener" class="floating-insta"> 
+     <img src="./icon-insta.png" alt="Instagram"> 
+   </a> 
 
    <header class="hero"> 
      <div class="hero-bg" aria-hidden="true"> 
@@ -896,6 +905,18 @@ info.event.extendedProps.remain };
        fullCalendarInstance.gotoDate(data.currentYearMonth + '-01'); 
        fullCalendarInstance.removeAllEvents(); 
        fullCalendarInstance.addEventSource(eventsArray); 
+     } 
+
+     function openDessertModal(date, time) { 
+       currentBooking = { date: date, slot: time, remain: 6 }; 
+
+       document.getElementById('modal-header-text').innerText = 
+"デセールご予約" + currentBooking.date + " (" + currentBooking.slot + ")"; 
+       var currentMax = 6; 
+       document.getElementById('input-people').max = currentMax; 
+       document.getElementById('max-people-label').innerText = currentMax; 
+       document.getElementById('input-people').value = 1; 
+       document.getElementById('res-modal').style.display = 'flex'; 
      } 
 
      function closeModal(id) { document.getElementById(id).style.display = 'none'; } 
