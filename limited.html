@@ -1,680 +1,814 @@
 <!DOCTYPE html> 
- <html lang="ja"> 
- <head> 
- <script src="https://analytics.ahrefs.com/analytics.js" data-key="CzEATMgG4Ka9IIE5KuN/Lg" async></script> 
-   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0LLZ5ZXX9P"></script> 
- <script> 
-   window.dataLayer = window.dataLayer || []; 
-   function gtag(){dataLayer.push(arguments);} 
-   gtag('js', new Date()); 
+<html lang="ja"> 
+<head> 
+<script src="https://analytics.ahrefs.com/analytics.js" data-key="CzEATMgG4Ka9IIE5KuN/Lg" async></script> 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0LLZ5ZXX9P"></script> 
+<script> 
+  window.dataLayer = window.dataLayer || []; 
+  function gtag(){dataLayer.push(arguments);} 
+  gtag('js', new Date()); 
 
-   gtag('config', 'G-0LLZ5ZXX9P'); 
- </script> 
+  gtag('config', 'G-0LLZ5ZXX9P'); 
+</script> 
 
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  
+  <title>French LABO. (フレンチラボ) | 姫路・野里のフレンチレストラン・オーベルジュ</title> 
+
+  <meta name="description" content="2026年秋、兵庫県姫路市野里に誕生する古民家オーベルジュ「NOATO auberge RO」に先駆け、料理が立ち上がる過程を味わう場所「French LABO. (フレンチラボ)」。旬の食材が炭火の熱を帯びる特別なコース料理をお愉しみください。"> 
+  <meta name="keywords" content="French LABO, フレンチラボ, 姫路, 野里, フレンチ, レストラン, オーベルジュ, 古民家, 予約, 米田武史"> 
+  <link rel="canonical" href="https://french-labo.jp/"> 
+  <meta name="format-detection" content="telephone=no"> 
+
+  <meta property="og:type" content="website"> 
+  <meta property="og:title" content="French LABO. | 姫路・野里のフレンチレストラン"> 
+  <meta property="og:description" content="料理が立ち上がる過程を味わう場所。旬の食材が炭火の熱を帯び、皿の上で完成していく様をお愉しみください。完全予約制。"> 
+  <meta property="og:url" content="https://french-labo.jp/"> 
+  <meta property="og:site_name" content="French LABO."> 
+
+  <meta property="og:image" content="https://french-labo.jp/fl-top_1.jpg"> 
+  <meta name="twitter:card" content="summary_large_image"> 
+  
+  <base target="_top"> 
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script> 
+  <link rel="preconnect" href="https://fonts.googleapis.com"> 
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet"> 
+  
+  <style> 
+    /* ========================================= 
+       絶対指定の4色カラーパレット (反転仕様)
+       ========================================= */ 
+    :root { 
+      --main-color: #F0F0F0; 
+      --sub-color: #AFB6BB; 
+      --accent-color: #CC4900; 
+      --white-color: #111112; 
+      
+      /* FullCalendarのシステムカラーを4色で上書き */ 
+      --fc-bg-color: var(--white-color); 
+      --fc-neutral-bg-color: var(--white-color); 
+      --fc-neutral-text-color: var(--main-color); 
+      --fc-border-color: var(--sub-color); 
+      --fc-button-text-color: var(--white-color); 
+      --fc-button-bg-color: var(--main-color); 
+      --fc-button-border-color: var(--main-color); 
+      --fc-button-hover-bg-color: var(--accent-color); 
+      --fc-button-hover-border-color: var(--accent-color); 
+      --fc-button-active-bg-color: var(--accent-color); 
+      --fc-button-active-border-color: var(--accent-color); 
+      --fc-event-bg-color: var(--main-color); 
+      --fc-event-border-color: var(--main-color); 
+      --fc-event-text-color: var(--white-color); 
+      --fc-today-bg-color: transparent; 
+    } 
+
+    /* 全体デザイン */ 
+    body {  
+      font-family: 'Lora', 'Shippori Mincho', "Hiragino Mincho ProN", serif;  
+      font-size: 16px; padding: 0; background-color: var(--white-color); color: var(--main-color);  
+      margin: 0; line-height: 1.8; -webkit-font-smoothing: antialiased;  
+    } 
+    *, *::before, *::after { box-sizing: border-box; } 
     
-   <title>French LABO. (フレンチラボ) | 姫路・野里のフレンチレストラン・オーベルジュ</title> 
+    input, textarea, select { font-family: inherit; background-color: var(--white-color); color: var(--main-color); }
+    button { font-family: inherit; } 
 
-   <meta name="description" 
-content="2026年秋、兵庫県姫路市野里に誕生する古民家オーベルジュ「NOATO auberge 
-RO」に先駆け、料理が立ち上がる過程を味わう場所「French LABO. 
-(フレンチラボ)」。旬の食材が炭火の熱を帯びる特別なコース料理をお愉しみください。"> 
-   <meta name="keywords" content="French LABO, フレンチラボ, 姫路, 野里, フレンチ, レストラン, オーベルジュ, 古民家, 予約, 米田武史"> 
-   <link rel="canonical" href="https://french-labo.jp/"> 
-   <meta name="format-detection" content="telephone=no"> 
-
-   <meta property="og:type" content="website"> 
-   <meta property="og:title" content="French LABO. | 姫路・野里のフレンチレストラン"> 
-   <meta property="og:description" content="料理が立ち上がる過程を味わう場所。旬の食材が炭火の熱を帯び、皿の上で完成していく様をお愉しみください。完全予約制。"> 
-   <meta property="og:url" content="https://french-labo.jp/"> 
-   <meta property="og:site_name" content="French LABO."> 
-
-   <meta property="og:image" 
-content="https://french-labo.jp/fl-top_1.jpg"> <meta 
-name="twitter:card" content="summary_large_image"> 
+    input[type="number"]::-webkit-outer-spin-button, 
+    input[type="number"]::-webkit-inner-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    } 
+    input[type="number"] { 
+      -moz-appearance: textfield; 
+    } 
     
-   <base target="_top"> 
-   <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script> 
-   <link rel="preconnect" href="https://fonts.googleapis.com"> 
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-
-   <link 
-href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap"
- rel="stylesheet"> 
+    .hero { position: relative; height: 80vh; min-height: 500px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: var(--white-color); overflow: hidden; background: var(--main-color); } 
+    .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.4; z-index: 1; overflow: hidden; } 
     
-   <style> 
-     /* ========================================= 
-        絶対指定の4色カラーパレット 
-        ========================================= */ 
-     :root { 
-       --main-color: #111112; 
-       --sub-color: #AFB6BB; 
-       --accent-color: #CC4900; 
-       --white-color: #F0F0F0; 
+    .hero-content { position: relative; z-index: 2; padding: 0 20px; width: 100%; } 
+
+    .hero h1 { font-weight: 400; letter-spacing: clamp(4px, 2vw, 8px); font-size: clamp(2.5em, 6vw, 4.5em); margin-bottom: 30px; color: var(--white-color); } 
+
+    .concept-text { font-size: clamp(1em, 2.5vw, 1.2em); letter-spacing: 2px; line-height: 2.2; color: var(--white-color); font-weight: 400; } 
+
+    section { max-width: 1000px; margin: 140px auto; padding: 0 25px; width: 100%; } 
+    
+    h2.section-title { font-weight: 500; letter-spacing: 4px; font-size: clamp(1.8em, 4vw, 2.8em); text-align: center; margin-bottom: 70px; position: relative; padding-bottom: 20px; color: var(--main-color); text-transform: uppercase; } 
+
+    h2.section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 40px; height: 1px; background: var(--accent-color); } 
+
+    .course-section { display: flex; flex-wrap: wrap; gap: 40px; align-items: stretch; } 
+
+    .slideshow-container { flex: 1 1 400px; position: relative; height: clamp(300px, 40vw, 450px); border-radius: 4px; overflow: hidden; border: 1px solid var(--sub-color); width: 100%; } 
+
+    .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1.5s ease-in-out; background-size: cover; background-position: center; } 
+    .slide.active { opacity: 1; } 
+    
+    .course-info { flex: 1 1 350px; display: flex; flex-direction: column; justify-content: center; } 
+
+    .price-tag { font-size: clamp(1.5em, 3vw, 2.2em); border-bottom: 1px solid var(--sub-color); padding-bottom: 15px; margin-bottom: 25px; font-weight: 500; line-height: 1.4; letter-spacing: 1px; } 
+
+    #calendar-wrapper { background: var(--white-color); padding: 0; position: relative; } 
+    .calendar-header-top { text-align: center; margin-bottom: 25px; } 
+    #current-month-label { font-size: 1.5em; font-weight: 500; letter-spacing: 2px; color: var(--main-color); } 
+    .calendar-nav-bottom { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; width: 100%; } 
+
+    .cal-btn { background: var(--main-color); color: var(--white-color); border: none; padding: 12px 18px; border-radius: 4px; cursor: pointer; transition: background 0.2s; font-size: 0.9em; min-width: 100px; font-weight: 500; letter-spacing: 1px; } 
+    .cal-btn:hover { background: var(--accent-color); } 
+    .cal-btn:disabled { background: var(--sub-color); cursor: not-allowed; } 
+
+    .fc-theme-standard th, .fc-theme-standard td { border-color: var(--sub-color) !important; } 
+    .fc-daygrid-day-frame { min-height: 90px !important; display: flex; flex-direction: column; } 
+    .custom-restricted-day, .fc-day-past { background-color: var(--sub-color) !important; pointer-events: none !important; } 
+
+    .custom-restricted-day .fc-daygrid-day-number, .fc-day-past .fc-daygrid-day-number { color: var(--white-color) !important; } 
+    
+    /* 枠自体に改行を許可する設定を追加 */ 
+    .fc-event { border: none !important; border-radius: 4px !important; padding: 4px 6px !important; margin: 2px 0 !important; cursor: pointer !important; white-space: normal !important; } 
+    .fc-event-main { white-space: normal !important; } 
+    /* 改行を許可するように white-space を変更 */ 
+    .fc-event-title { font-size: 0.95em !important; font-weight: 700 !important; text-align: center !important; display: block !important; letter-spacing: 0.5px; white-space: pre-wrap !important; } 
+
+    .available-event { background-color: var(--main-color) !important; color: var(--white-color) !important; } 
+
+    .full-event { background-color: var(--sub-color) !important; color: var(--main-color) !important; pointer-events: none !important; } 
+
+    .holiday-event { background-color: var(--sub-color) !important; color: var(--main-color) !important; pointer-events: none !important; } 
+
+    .inverted-bg {  
+      background: linear-gradient(135deg, #F0F0F0 0%, #DCDCDC 50%, #F0F0F0 100%);  
+      color: var(--white-color); width: 100%; margin: 140px 0; padding: 1px 0;  
+    } 
+    .inverted-bg section { margin: 120px auto; } 
+    .inverted-bg .section-title { color: var(--white-color); margin-bottom: 50px; } 
+    .store-concept-container { display: flex; flex-direction: column; gap: 50px; align-items: center; text-align: center; } 
+    .store-slideshow { width: 100%; height: 450px; flex: none; border-color: rgba(17, 17, 18, 0.15); } 
+    .store-concept-content p { line-height: 1.8; margin-bottom: 20px; font-weight: 400; } 
+    .catchphrase { font-size: 1.05em; letter-spacing: 4px; margin-bottom: -80px !important; color: var(--white-color); } 
+
+    .brand-name { font-size: clamp(3.5em, 8vw, 5em); letter-spacing: 0; margin-bottom: -40px !important; font-weight: 400; line-height: 1; } 
+
+    .brand-sub { font-size: 0.9em; letter-spacing: 3px; margin-bottom: 40px !important; color: var(--sub-color); text-transform: uppercase; } 
+
+    .pr-cards { display: flex; gap: 25px; justify-content: center; margin-top: 20px; flex-wrap: wrap; width: 100%; } 
+
+    .pr-card { flex: 1 1 350px; background: rgba(17,17,18,0.03); border: 1px solid rgba(17,17,18,0.15); border-radius: 4px; overflow: hidden; text-decoration: none; color: var(--white-color); transition: transform 0.4s ease, background 0.4s ease, border-color 0.4s ease; display: flex; flex-direction: column; } 
+    .pr-card:hover { transform: translateY(-5px); background: rgba(17,17,18,0.08); border-color: rgba(17,17,18,0.3); } 
+    .pr-card-img { width: 100%; height: 200px; background-size: cover; background-position: center; } 
+    .pr-card-body { padding: 25px; display: flex; flex-direction: column; gap: 10px; text-align: left; } 
+    .pr-card-date { font-size: 0.85em; color: var(--sub-color); letter-spacing: 1px; } 
+    .pr-card-title { font-size: 1.05em; font-weight: 500; margin: 0; line-height: 1.6; letter-spacing: 0.5px; } 
+
+    .chef-container { display: flex; flex-wrap: nowrap; gap: 40px; align-items: flex-start; } 
+    .chef-slideshow { flex: 0 0 45%; height: 500px; position: relative; overflow: hidden; border-radius: 4px; } 
+    .chef-bio { flex: 1 1 auto; } 
+    .cv-list { list-style: none; padding: 0; font-size: 0.95em; color: var(--main-color); margin-top: 25px; } 
+    .cv-item { display: flex; margin-bottom: 12px; padding-left: 15px; border-left: 2px solid var(--sub-color); } 
+    .cv-year { flex: 0 0 65px; font-weight: 500; } 
+
+    .info-content { max-width: 600px; margin: 0 auto; } 
+    .info-dl { width: 100%; border-top: 1px solid var(--sub-color); margin: 0; padding: 0; } 
+    .info-row { display: flex; border-bottom: 1px solid var(--sub-color); padding: 30px 0; } 
+    .info-row dt { flex: 0 0 160px; font-weight: 500; letter-spacing: 2px; } 
+    .info-row dd { flex: 1; margin: 0; line-height: 1.8; font-weight: 400; } 
+
+    .map-toggle-btn { background: var(--main-color); color: var(--white-color); border: none; padding: 16px 30px; cursor: pointer; display: block; margin: 50px auto 0; border-radius: 4px; transition: background 0.3s; width: 100%; max-width: 320px; font-size: 1em; font-weight: 500; letter-spacing: 2px; } 
+    .map-toggle-btn:hover { background: var(--accent-color); } 
+    .map-wrapper { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; position: relative; } 
+    .map-wrapper.open { max-height: 600px; margin-top: 40px; } 
+
+    .map-wrapper iframe { width: 100%; height: 450px; border: 0; border-radius: 4px; filter: grayscale(100%) !important; -webkit-filter: grayscale(100%) !important; } 
+
+    footer { background: var(--white-color); color: var(--sub-color); text-align: center; padding: 60px 20px; font-size: 0.85em; border-top: 1px solid var(--sub-color); margin-top: 100px; letter-spacing: 1px; } 
+
+    footer a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--sub-color); transition: border-color 0.3s; } 
+    footer a:hover { border-color: var(--main-color); color: var(--main-color); } 
+
+    #loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 18, 0.8); z-index: 50; justify-content: center; align-items: center; font-weight: 500; letter-spacing: 2px; color: var(--main-color); } 
+
+    .modal-overlay { background-color: rgba(17, 17, 18, 0.6); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); } 
+
+    .modal-content { background-color: var(--white-color); padding: 40px; border-radius: 4px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2); } 
+
+    @media (max-width: 767px) { 
+      .hero { height: 100vh; height: 100dvh; min-height: auto; width: 100%; } 
+      section { margin: 100px auto; padding: 0 20px; } 
+      h2.section-title { margin-bottom: 50px; } 
+      .course-section { flex-direction: column; gap: 40px; } 
+      .chef-container { flex-direction: column; gap: 40px; } 
+      .slideshow-container, .store-slideshow, .chef-slideshow { flex: none; width: 100%; height: auto; aspect-ratio: 16 / 9; } 
+      .inverted-bg { margin: 100px 0; } 
+      .inverted-bg section { margin: 80px auto; } 
+      .pr-cards { flex-wrap: nowrap; gap: 10px; } 
+      .pr-card { flex: 1 1 50%; min-width: 0; } 
+      .pr-card-img { height: 100px; } 
+      .pr-card-body { padding: 12px 10px; gap: 5px; } 
+      .pr-card-date { font-size: 0.75em; } 
+      .pr-card-title { font-size: 0.8em; line-height: 1.4; } 
+      .calendar-header-top { margin-bottom: 20px; } 
+      .calendar-nav-bottom { justify-content: space-between; gap: 10px; margin-bottom: 25px; } 
+      .cal-btn { flex: 1; min-width: 0; font-size: 0.85em; padding: 12px 0; } 
+      .info-row { display: block; padding: 25px 0; } 
+      .info-row dt { margin-bottom: 8px; font-size: 0.9em; color: var(--sub-color); text-transform: uppercase; } 
+      .info-row dd { margin: 0; font-size: 1.05em; line-height: 1.6; } 
+      .fc-daygrid-day-frame { min-height: 75px !important; } 
+      .fc-daygrid-day-number { font-size: 0.95em !important; padding: 6px !important; } 
+      .fc-col-header-cell-cushion { font-size: 0.9em !important; padding: 12px 0 !important; } 
+      
+      /* SP時の改行対応と、2段フル用の文字サイズ調整 */ 
+      .fc-event { padding: 2px 0 !important; margin: 2px !important; white-space: normal !important; } 
+      .fc-event-main { white-space: normal !important; } 
+
+      .fc-event-title { font-size: 0.85em !important; text-align: center !important; font-weight: 700 !important; letter-spacing: 0 !important; white-space: pre-wrap !important; line-height: 1.2 !important; word-break: break-all !important; } 
+
+      .full-day-holiday .fc-event-title { font-size: 0.65em !important; line-height: 1.2 !important; padding: 2px 0 !important; } 
+      
+      .modal-content { padding: 30px 20px; } 
+    } 
+
+    .floating-insta { position: fixed; top: 20px; right: 20px; z-index: 900; width: 45px; transition: opacity 0.3s; } 
+    .floating-insta:hover { opacity: 0.7; } 
+    .floating-insta img { width: 100%; height: auto; display: block; } 
+    @media (max-width: 767px) { .floating-insta { width: 35px; top: 15px; right: 15px; } } 
+  </style> 
+</head> 
+<body> 
+
+  <a href="https://www.instagram.com/french__labo/" target="_blank" rel="noopener" class="floating-insta"> 
+    <img src="./icon-insta.png" alt="Instagram"> 
+  </a> 
+
+  <header class="hero"> 
+    <div class="hero-bg" aria-hidden="true"> 
+      <div class="slide active" style="background-image: url('./fl-top_1.jpg')" title="フレンチラボ メイン画像1"></div> 
+      <div class="slide" style="background-image: url('./fl-top_2.jpg')" title="フレンチラボ メイン画像2"></div> 
+      <div class="slide" style="background-image: url('./fl-top_3.jpg')" title="フレンチラボ メイン画像3"></div> 
+    </div> 
+    <div class="hero-content"> 
+      <h1 onclick="openPwModal()" style="cursor: pointer;">French LABO.</h1> 
+
+      <p class="concept-text">2026年秋、姫路市野里に誕生する<br>オーベルジュに先駆け<br>料理が立ち上がる過程を味わう場所<br>French LABO.です。</p> 
+    </div> 
+  </header> 
+
+  <main> 
+
+    <section id="dessert-event"> 
+      <h2 class="section-title">Dessert Event</h2> 
+      <div class="course-section"> 
+        <div class="slideshow-container" aria-hidden="true"> 
+          <div class="slide active" style="background-image: url('./parfait-1b.jpg')" title="パフェイメージ1"></div> 
+          <div class="slide" style="background-image: url('./parfait-2.jpg')" title="パフェイメージ2"></div> 
+        </div> 
+        <div class="course-info"> 
+
+          <h3 class="price-tag">旬果のパフェ+<br><span style="font-size:0.65em;">グラスドリンク&アミューズ３種</span><br><span style="font-size:0.8em; font-weight:400;">5,000円 <span style="font-size:0.65em;">(税込)</span></span></h3> 
+          <p style="font-size: 0.95em; line-height: 1.8; font-weight: 400; margin-bottom: 25px;"> 
+            旬の果実、香り、温度、食感。<br> 
+            テストキッチンで育ててきたフランス料理の余韻を、３日間だけのパフェに閉じ込めます。<br> 
+            ご好評いただいたSeason1,Season2に引き続き、スピンオフ企画としてご用意致しました。<br> 
+            ひと口ごとに香りが変わる、French LABO.のデセールをお楽しみください。 
+          </p> 
+          <p style="font-size: 0.9em; line-height: 1.8; font-weight: 400; margin-bottom: 25px;"> 
+            <strong>◆Parfait-パフェ</strong><br> 
+            Pêche - 白桃<br>Mangue - マンゴー<br>Muscat - マスカット<br>※上記よりお選びいただけます。<br><br> 
+            <strong>◆Boisson-お飲み物（グラスドリンク）</strong><br> 
+            【アルコール】<br>シャンパーニュ/貴腐ワイン<br> 
+            【ノンアルコール】<br>ノンアルコールスパークリング/フレッシュハーブティー<br>※上記よりお選びいただけます。<br><br> 
+            <strong>◆Amuse-bouche（３種のアミューズ・ブーシュ）</strong> 
+          </p> 
+
+          <p style="font-size:0.8em; line-height: 1.8; border: 1px solid var(--sub-color); padding: 20px; border-radius: 4px; font-weight: 400;"> 
+            各日２部制一斉スタート 13:00〜 / 15:00〜<br> 
+            ※完全予約制<br> 
+           ※１部につき6席まで 
+          </p> 
+          <div style="margin-top: 25px; padding: 20px; border: 1px solid var(--sub-color); border-radius: 4px;"> 
+
+            <h4 style="font-weight: 500; text-align: center; margin-bottom: 20px; letter-spacing: 2px;">デセールご予約</h4> 
+            <div style="display: flex; flex-direction: column; gap: 15px;"> 
+
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;"> 
+                <strong style="width: 120px;">8月21日(金)</strong> 
+                <button class="cal-btn" style="flex: 1;">13:00</button> 
+                <button class="cal-btn" style="flex: 1;">15:00</button> 
+              </div> 
+
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;"> 
+                <strong style="width: 120px;">8月22日(土)</strong> 
+                <button class="cal-btn" style="flex: 1;">13:00</button> 
+                <button class="cal-btn" style="flex: 1;">15:00</button> 
+              </div> 
+
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;"> 
+                <strong style="width: 120px;">8月23日(日)</strong> 
+                <button class="cal-btn" style="flex: 1;">13:00</button> 
+                <button class="cal-btn" style="flex: 1;">15:00</button> 
+              </div> 
+            </div> 
+          </div> 
+        </div> 
+      </div> 
+    </section> 
+
+    <section id="course"> 
+      <h2 class="section-title">Menu Dégustation</h2> 
+      <div class="course-section"> 
+        <div class="slideshow-container" aria-hidden="true"> 
+          <div class="slide active" style="background-image: url('./fl-dish_1.jpg')" title="コース料理イメージ1"></div> 
+          <div class="slide" style="background-image: url('./fl-dish_2.jpg')" title="コース料理イメージ2"></div> 
+          <div class="slide" style="background-image: url('./fl-dish_3.jpg')" title="コース料理イメージ3"></div> 
+          <div class="slide" style="background-image: url('./fl-dish_4.jpg')" title="コース料理イメージ4"></div> 
+          <div class="slide" style="background-image: url('./fl-dish_5.jpg')" title="コース料理イメージ5"></div> 
+          <div class="slide" style="background-image: url('./fl-dish_6.jpg')" title="コース料理イメージ6"></div> 
+          <div class="slide" style="background-image: url('./fl-dish_7.jpg')" title="コース料理イメージ7"></div> 
+        </div> 
+        <div class="course-info"> 
+
+          <h3 class="price-tag">旬の食材で彩る、<br>おまかせコース<br><span style="font-size:0.8em; font-weight:400;">16,000円 <span style="font-size:0.65em;">(税込)</span></span></h3> 
+
+          <p class="course-note" style="font-size: 1.05em; font-weight: 400;">前菜 2皿 / 魚料理 1皿 / 肉料理 1皿 /<br>デザート 2皿 / パン / 食後のお飲み物</p> 
+
+          <p style="font-size:0.8em; line-height: 1.8; border: 1px solid var(--sub-color); padding: 20px; border-radius: 4px; margin-top: 25px; font-weight: 400;"> 
+            ※ご提供時間：2時間前後<br> 
+            ※ランチ(12:00)、ディナー(18:00)ともに同じ内容になります。<br> 
+            ※内容は季節の食材によって変更となる場合がございます。<br> 
+            ※一斉スタートのため、開始時間までにお越しください。<br> 
+            ※お子様のご利用について<br> 
+             大人の方と同じ料理を召し上がれるお子様に限ります。 
+          </p> 
+        </div> 
+      </div> 
+      
+      <div class="course-section" style="margin-top: 100px;"> 
+        <div class="slideshow-container" aria-hidden="true"> 
+          <div class="slide active" style="background-image: url('./fl-drink_1.jpg')" title="ワインペアリング"></div> 
+        </div> 
+        <div class="course-info"> 
+
+          <h3 style="font-weight:500; margin-bottom:20px; font-size: clamp(1.5em, 3vw, 2.2em); letter-spacing: 2px;">Drink Selection</h3> 
+
+          <p style="font-size: 1.05em; margin-bottom: 25px; font-weight: 400;">お料理一皿ごとに厳選したドリンクを少しずつお楽しみいただけます。</p> 
+          <ul style="padding-left: 20px; font-size: 0.95em; line-height: 2; font-weight: 400;"> 
+
+            <li style="margin-bottom: 10px;">アルコールペアリングコース：8,500円 <span style="font-size:0.7em;">(税込)</span>〜</li> 
+            <li>ノンアルコールペアリングコース：4,200円 <span style="font-size:0.7em;">(税込)</span></li> 
+          </ul> 
+
+          <p style="font-size:0.8em; line-height: 1.8; border: 1px solid var(--sub-color); padding: 20px; border-radius: 4px; margin-top: 25px; font-weight: 400;"> 
+            ※単品でのご用意もございます。 
+          </p> 
+        </div> 
+      </div> 
+    </section> 
+
+    <section id="reservation"> 
+      <h2 class="section-title">RESERVATION</h2> 
+      <div id="calendar-wrapper"> 
+        <div id="loading-overlay">LOADING...</div> 
+        <div class="calendar-header-top"><div id="current-month-label"></div></div> 
+        <div class="calendar-nav-bottom"> 
+          <button class="cal-btn" id="btn-prev-month" onclick="changeMonth(-1)">◀ 前の月</button> 
+          <button class="cal-btn" onclick="goToToday()">今日</button> 
+          <button class="cal-btn" id="btn-next-month" onclick="changeMonth(1)">次の月 ▶</button> 
+        </div> 
+        <div id="calendar"></div> 
+      </div> 
+    </section> 
+
+    <div class="inverted-bg"> 
+      <section id="store"> 
+        <h2 class="section-title">Coming 2026 Autumn</h2> 
+        <div class="store-concept-container"> 
+
+          <div class="store-concept-content"><p>古き良き町屋の趣を残しながら、<br>洗練されたモダンな空間へと生まれ変わります。<br>特別な日のためのお食事を、非日常の空間でお愉しみください。</p> 
+          </div> 
+          <div class="slideshow-container store-slideshow" aria-hidden="true"> 
+            <div class="slide active" style="background-image: url('./fl-img_1.jpg');" title="オーベルジュ完成予想1"></div> 
+            <div class="slide" style="background-image: url('./fl-img_2.jpg');" title="オーベルジュ完成予想2"></div> 
+            <div class="slide" style="background-image: url('./fl-img_3.jpg');" title="オーベルジュ完成予想3"></div> 
+          </div> 
+          
+          <div class="pr-cards"> 
+
+            <a href="https://prtimes.jp/main/html/rd/p/000000007.000132186.html" class="pr-card" target="_blank" rel="noopener"> 
+              <div class="pr-card-img" style="background-image: url('./fl-news_2.jpg');" title="PR記事画像1"></div> 
+              <div class="pr-card-body"> 
+                <span class="pr-card-date">2025.08.28</span> 
+                <h4 class="pr-card-title">【9月2日・3日開催】姫路・野里に新たな食文化拠点誕生へ「古民家オーベルジュ」着工前内覧会を初開催</h4> 
+              </div> 
+            </a> 
+
+            <a href="https://prtimes.jp/main/html/rd/p/000000011.000132186.html" class="pr-card" target="_blank" rel="noopener"> 
+              <div class="pr-card-img" style="background-image: url('./fl-news_1.jpg');" title="PR記事画像2"></div> 
+              <div class="pr-card-body"> 
+                <span class="pr-card-date">2026.03.19</span> 
+                <h4 class="pr-card-title">【イベント事後レポート】姫路・野里の歴史が未来へ繋がる1日。「町家の日 in 姫路」連動企画、特別公開が大盛況！</h4> 
+              </div> 
+            </a> 
+          </div> 
+        </div> 
+      </section> 
+    </div> 
+
+    <section id="chef"> 
+      <h2 class="section-title">CHEF</h2> 
+      <div class="chef-container"> 
         
-       /* FullCalendarのシステムカラーを4色で上書き */ 
-       --fc-bg-color: var(--white-color); 
-       --fc-neutral-bg-color: var(--white-color); 
-       --fc-neutral-text-color: var(--main-color); 
-       --fc-border-color: var(--sub-color); 
-       --fc-button-text-color: var(--white-color); 
-       --fc-button-bg-color: var(--main-color); 
-       --fc-button-border-color: var(--main-color); 
-       --fc-button-hover-bg-color: var(--accent-color); 
-       --fc-button-hover-border-color: var(--accent-color); 
-       --fc-button-active-bg-color: var(--accent-color); 
-       --fc-button-active-border-color: var(--accent-color); 
-       --fc-event-bg-color: var(--main-color); 
-       --fc-event-border-color: var(--main-color); 
-       --fc-event-text-color: var(--white-color); 
-       --fc-today-bg-color: transparent; 
-     } 
-
-     /* 全体デザイン */ 
-     body {  
-       font-family: 'Lora', 'Shippori Mincho', "Hiragino Mincho ProN", serif;  
-       font-size: 16px; padding: 0; background-color: var(--white-color); color: var(--main-color);  
-       margin: 0; line-height: 1.8; -webkit-font-smoothing: antialiased;  
-     } 
-     *, *::before, *::after { box-sizing: border-box; } 
-      
-     input, button, textarea, select { font-family: inherit; } 
-
-     input[type="number"]::-webkit-outer-spin-button, 
-     input[type="number"]::-webkit-inner-spin-button { 
-       -webkit-appearance: none; 
-       margin: 0; 
-     } 
-     input[type="number"] { 
-       -moz-appearance: textfield; 
-     } 
-      
-
-     .hero { position: relative; height: 80vh; min-height: 500px; 
-display: flex; flex-direction: column; justify-content: center; 
-align-items: center; text-align: center; color: var(--white-color); 
-overflow: hidden; background: var(--main-color); } 
-     .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.4; z-index: 1; overflow: hidden; } 
-      
-     .hero-content { position: relative; z-index: 2; padding: 0 20px; width: 100%; } 
-
-     .hero h1 { font-weight: 400; letter-spacing: clamp(4px, 2vw, 8px); 
-font-size: clamp(2.5em, 6vw, 4.5em); margin-bottom: 30px; color: 
-var(--white-color); } 
-
-     .concept-text { font-size: clamp(1em, 2.5vw, 1.2em); 
-letter-spacing: 2px; line-height: 2.2; color: var(--white-color); 
-font-weight: 400; } 
-
-     section { max-width: 1000px; margin: 140px auto; padding: 0 25px; width: 100%; } 
-      
-
-     h2.section-title { font-weight: 500; letter-spacing: 4px; 
-font-size: clamp(1.8em, 4vw, 2.8em); text-align: center; margin-bottom: 
-70px; position: relative; padding-bottom: 20px; color: 
-var(--main-color); text-transform: uppercase; } 
-
-     h2.section-title::after { content: ''; position: absolute; bottom: 
-0; left: 50%; transform: translateX(-50%); width: 40px; height: 1px; 
-background: var(--accent-color); } 
-
-     .course-section { display: flex; flex-wrap: wrap; gap: 40px; align-items: stretch; } 
-
-     .slideshow-container { flex: 1 1 400px; position: relative; height:
- clamp(300px, 40vw, 450px); border-radius: 4px; overflow: hidden; 
-border: 1px solid var(--sub-color); width: 100%; } 
-
-     .slide { position: absolute; width: 100%; height: 100%; opacity: 0;
- transition: opacity 1.5s ease-in-out; background-size: cover; 
-background-position: center; } 
-     .slide.active { opacity: 1; } 
-      
-     .course-info { flex: 1 1 350px; display: flex; flex-direction: column; justify-content: center; } 
-
-     .price-tag { font-size: clamp(1.5em, 3vw, 2.2em); border-bottom: 
-1px solid var(--sub-color); padding-bottom: 15px; margin-bottom: 25px; 
-font-weight: 500; line-height: 1.4; letter-spacing: 1px; } 
-
-     #calendar-wrapper { background: var(--white-color); padding: 0; position: relative; } 
-     .calendar-header-top { text-align: center; margin-bottom: 25px; } 
-     #current-month-label { font-size: 1.5em; font-weight: 500; letter-spacing: 2px; color: var(--main-color); } 
-     .calendar-nav-bottom { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; width: 100%; } 
-
-     .cal-btn { background: var(--main-color); color: 
-var(--white-color); border: none; padding: 12px 18px; border-radius: 
-4px; cursor: pointer; transition: background 0.2s; font-size: 0.9em; 
-min-width: 100px; font-weight: 500; letter-spacing: 1px; } 
-     .cal-btn:hover { background: var(--accent-color); } 
-     .cal-btn:disabled { background: var(--sub-color); cursor: not-allowed; } 
-
-     .fc-theme-standard th, .fc-theme-standard td { border-color: var(--sub-color) !important; } 
-     .fc-daygrid-day-frame { min-height: 90px !important; display: flex; flex-direction: column; } 
-     .custom-restricted-day, .fc-day-past { background-color: var(--sub-color) !important; pointer-events: none !important; } 
-
-     .custom-restricted-day .fc-daygrid-day-number, .fc-day-past 
-.fc-daygrid-day-number { color: var(--white-color) !important; } 
-      
-     /* 枠自体に改行を許可する設定を追加 */ 
-
-     .fc-event { border: none !important; border-radius: 4px !important;
- padding: 4px 6px !important; margin: 2px 0 !important; cursor: pointer 
-!important; white-space: normal !important; } 
-     .fc-event-main { white-space: normal !important; } 
-     /* 改行を許可するように white-space を変更 */ 
-
-     .fc-event-title { font-size: 0.95em !important; font-weight: 700 
-!important; text-align: center !important; display: block !important; 
-letter-spacing: 0.5px; white-space: pre-wrap !important; } 
-
-     .available-event { background-color: var(--main-color) !important; color: var(--white-color) !important; } 
-
-     .full-event { background-color: var(--sub-color) !important; color:
- var(--main-color) !important; pointer-events: none !important; } 
-
-     .holiday-event { background-color: var(--sub-color) !important; 
-color: var(--main-color) !important; pointer-events: none !important; } 
-
-     .inverted-bg {  
-       background: linear-gradient(135deg, #111112 0%, #2a2a2d 50%, #111112 100%);  
-       color: var(--white-color); width: 100%; margin: 140px 0; padding: 1px 0;  
-     } 
-     .inverted-bg section { margin: 120px auto; } 
-     .inverted-bg .section-title { color: var(--white-color); margin-bottom: 50px; } 
-     .store-concept-container { display: flex; flex-direction: column; gap: 50px; align-items: center; text-align: center; } 
-     .store-slideshow { width: 100%; height: 450px; flex: none; border-color: rgba(255, 255, 255, 0.15); } 
-     .store-concept-content p { line-height: 1.8; margin-bottom: 20px; font-weight: 400; } 
-     .catchphrase { font-size: 1.05em; letter-spacing: 4px; margin-bottom: -80px !important; color: var(--white-color); } 
-
-     .brand-name { font-size: clamp(3.5em, 8vw, 5em); letter-spacing: 0;
- margin-bottom: -40px !important; font-weight: 400; line-height: 1; } 
-
-     .brand-sub { font-size: 0.9em; letter-spacing: 3px; margin-bottom: 
-40px !important; color: var(--sub-color); text-transform: uppercase; } 
-
-     .pr-cards { display: flex; gap: 25px; justify-content: center; margin-top: 20px; flex-wrap: wrap; width: 100%; } 
-
-     .pr-card { flex: 1 1 350px; background: rgba(255,255,255,0.03); 
-border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; overflow: 
-hidden; text-decoration: none; color: var(--white-color); transition: 
-transform 0.4s ease, background 0.4s ease, border-color 0.4s ease; 
-display: flex; flex-direction: column; } 
-     .pr-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); } 
-     .pr-card-img { width: 100%; height: 200px; background-size: cover; background-position: center; } 
-     .pr-card-body { padding: 25px; display: flex; flex-direction: column; gap: 10px; text-align: left; } 
-     .pr-card-date { font-size: 0.85em; color: var(--sub-color); letter-spacing: 1px; } 
-     .pr-card-title { font-size: 1.05em; font-weight: 500; margin: 0; line-height: 1.6; letter-spacing: 0.5px; } 
-
-     .chef-container { display: flex; flex-wrap: nowrap; gap: 40px; align-items: flex-start; } 
-     .chef-slideshow { flex: 0 0 45%; height: 500px; position: relative; overflow: hidden; border-radius: 4px; } 
-     .chef-bio { flex: 1 1 auto; } 
-     .cv-list { list-style: none; padding: 0; font-size: 0.95em; color: var(--main-color); margin-top: 25px; } 
-     .cv-item { display: flex; margin-bottom: 12px; padding-left: 15px; border-left: 2px solid var(--sub-color); } 
-     .cv-year { flex: 0 0 65px; font-weight: 500; } 
-
-     .info-content { max-width: 600px; margin: 0 auto; } 
-     .info-dl { width: 100%; border-top: 1px solid var(--sub-color); margin: 0; padding: 0; } 
-     .info-row { display: flex; border-bottom: 1px solid var(--sub-color); padding: 30px 0; } 
-     .info-row dt { flex: 0 0 160px; font-weight: 500; letter-spacing: 2px; } 
-     .info-row dd { flex: 1; margin: 0; line-height: 1.8; font-weight: 400; } 
-
-
-     .map-toggle-btn { background: var(--main-color); color: 
-var(--white-color); border: none; padding: 16px 30px; cursor: pointer; 
-display: block; margin: 50px auto 0; border-radius: 4px; transition: 
-background 0.3s; width: 100%; max-width: 320px; font-size: 1em; 
-font-weight: 500; letter-spacing: 2px; } 
-     .map-toggle-btn:hover { background: var(--accent-color); } 
-     .map-wrapper { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; position: relative; } 
-     .map-wrapper.open { max-height: 600px; margin-top: 40px; } 
-
-     .map-wrapper iframe { width: 100%; height: 450px; border: 0; 
-border-radius: 4px; filter: grayscale(100%) !important; -webkit-filter: 
-grayscale(100%) !important; } 
-
-
-     footer { background: var(--white-color); color: var(--sub-color); 
-text-align: center; padding: 60px 20px; font-size: 0.85em; border-top: 
-1px solid var(--sub-color); margin-top: 100px; letter-spacing: 1px; } 
-
-     footer a { color: inherit; text-decoration: none; border-bottom: 
-1px solid var(--sub-color); transition: border-color 0.3s; } 
-     footer a:hover { border-color: var(--main-color); color: var(--main-color); } 
-
-
-     #loading-overlay { display: none; position: absolute; top: 0; left:
- 0; width: 100%; height: 100%; background: rgba(240, 240, 240, 0.8); 
-z-index: 50; justify-content: center; align-items: center; font-weight: 
-500; letter-spacing: 2px; color: var(--main-color); } 
-
-
-     .modal-overlay { background-color: rgba(17, 17, 18, 0.6); 
-backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); } 
-
-     .modal-content { background-color: var(--white-color); padding: 
-40px; border-radius: 4px; width: 90%; max-width: 500px; max-height: 
-90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2); } 
-
-     @media (max-width: 767px) { 
-       .hero { height: 100vh; height: 100dvh; min-height: auto; width: 100%; } 
-       section { margin: 100px auto; padding: 0 20px; } 
-       h2.section-title { margin-bottom: 50px; } 
-       .course-section { flex-direction: column; gap: 40px; } 
-       .chef-container { flex-direction: column; gap: 40px; } 
-       .slideshow-container, .store-slideshow, .chef-slideshow { flex: none; width: 100%; height: auto; aspect-ratio: 16 / 9; } 
-       .inverted-bg { margin: 100px 0; } 
-       .inverted-bg section { margin: 80px auto; } 
-       .pr-cards { flex-wrap: nowrap; gap: 10px; } 
-       .pr-card { flex: 1 1 50%; min-width: 0; } 
-       .pr-card-img { height: 100px; } 
-       .pr-card-body { padding: 12px 10px; gap: 5px; } 
-       .pr-card-date { font-size: 0.75em; } 
-       .pr-card-title { font-size: 0.8em; line-height: 1.4; } 
-       .calendar-header-top { margin-bottom: 20px; } 
-       .calendar-nav-bottom { justify-content: space-between; gap: 10px; margin-bottom: 25px; } 
-       .cal-btn { flex: 1; min-width: 0; font-size: 0.85em; padding: 12px 0; } 
-       .info-row { display: block; padding: 25px 0; } 
-       .info-row dt { margin-bottom: 8px; font-size: 0.9em; color: var(--sub-color); text-transform: uppercase; } 
-       .info-row dd { margin: 0; font-size: 1.05em; line-height: 1.6; } 
-       .fc-daygrid-day-frame { min-height: 75px !important; } 
-       .fc-daygrid-day-number { font-size: 0.95em !important; padding: 6px !important; } 
-       .fc-col-header-cell-cushion { font-size: 0.9em !important; padding: 12px 0 !important; } 
-        
-       /* SP時の改行対応と、2段フル用の文字サイズ調整 */ 
-       .fc-event { padding: 2px 0 !important; margin: 2px !important; white-space: normal !important; } 
-       .fc-event-main { white-space: normal !important; } 
-
-       .fc-event-title { font-size: 0.85em !important; text-align: 
-center !important; font-weight: 700 !important; letter-spacing: 0 
-!important; white-space: pre-wrap !important; line-height: 1.2 
-!important; word-break: break-all !important; } 
-
-       .full-day-holiday .fc-event-title { font-size: 0.65em !important;
- line-height: 1.2 !important; padding: 2px 0 !important; } 
-        
-       .modal-content { padding: 30px 20px; } 
-     } 
-   </style> 
- </head> 
- <body> 
-
-   <header class="hero"> 
-     <div class="hero-bg" aria-hidden="true"> 
-       <div class="slide active" style="background-image: url('./fl-top_1.jpg')" title="フレンチラボ メイン画像1"></div> 
-       <div class="slide" style="background-image: url('./fl-top_2.jpg')" title="フレンチラボ メイン画像2"></div> 
-       <div class="slide" style="background-image: url('./fl-top_3.jpg')" title="フレンチラボ メイン画像3"></div> 
-     </div> 
-     <div class="hero-content"> 
-       <h1>French LABO.</h1> 
-
-       <p 
-class="concept-text">2026年秋、姫路市野里に誕生する<br>オーベルジュに先駆け<br>料理が立ち上がる過程を味わう場所<br>French
- LABO.です。</p> 
-     </div> 
-   </header> 
-
-   <main> 
-
-     <section id="reservation"> 
-       <h2 class="section-title">RESERVATION</h2> 
-       <div id="calendar-wrapper"> 
-         <div id="loading-overlay">LOADING...</div> 
-         <div class="calendar-header-top"><div id="current-month-label"></div></div> 
-         <div class="calendar-nav-bottom"> 
-           <button class="cal-btn" id="btn-prev-month" onclick="changeMonth(-1)">◀ 前の月</button> 
-           <button class="cal-btn" onclick="goToToday()">今日</button> 
-           <button class="cal-btn" id="btn-next-month" onclick="changeMonth(1)">次の月 ▶</button> 
-         </div> 
-         <div id="calendar"></div> 
-       </div> 
-     </section> 
-
-   </main> 
-
-   <footer> 
-
-     <p>© <a href="https://www.gpm.co.jp/" target="_blank" 
-rel="noopener">ジーピーエム株式会社</a> All Rights Reserved.</p> 
-     <p><a href="https://french-labo.jp/canc.html" target="_self">キャンセルポリシー</a></p> 
-   </footer> 
-
-   <div id="res-modal" class="modal-overlay" style="display:none; 
-position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000; 
-justify-content:center; align-items:center;"> 
-     <div class="modal-content"> 
-
-       <div id="modal-header-text" style="font-size: 1.3em; 
-font-weight:500; text-align:center; margin-bottom:20px; 
-border-bottom:1px solid var(--sub-color); 
-padding-bottom:15px;">予約フォーム</div> 
-
-       <div class="form-group"><label>お名前 
-*</label><input type="text" id="input-name" style="width:100%; 
-padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); 
-border-radius:4px;"></div> 
-
-       <div class="form-group"><label>電話番号 
-*</label><input type="tel" id="input-phone" style="width:100%; 
-padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); 
-border-radius:4px;"></div> 
-
-       <div class="form-group"><label>メールアドレス 
-*</label><input type="email" id="input-email" 
-style="width:100%; padding:10px; margin-bottom:15px; border:1px solid 
-var(--sub-color); border-radius:4px;"></div> 
-       <div class="form-group"> 
-         <label>人数 * (最大<span id="max-people-label">6</span>名)</label> 
-         <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px; margin-top:5px;"> 
-
-           <button type="button" onclick="adjustPeople(-1)" 
-style="width:45px; height:45px; background:var(--white-color); 
-border:1px solid var(--sub-color); border-radius:4px; font-size:1.5em; 
-cursor:pointer; color:var(--main-color); display:flex; 
-justify-content:center; align-items:center;">-</button> 
-
-           <input type="number" id="input-people" min="1" max="6" 
-value="1" style="width:60px; height:45px; border:none; border-bottom:1px
- solid var(--sub-color); text-align:center; font-size:1.2em; background:
- transparent; color:var(--main-color); outline:none; 
-pointer-events:none;" readonly> 
-
-           <button type="button" onclick="adjustPeople(1)" 
-style="width:45px; height:45px; background:var(--white-color); 
-border:1px solid var(--sub-color); border-radius:4px; font-size:1.5em; 
-cursor:pointer; color:var(--main-color); display:flex; 
-justify-content:center; align-items:center;">+</button> 
-         </div> 
-       </div> 
-
-       <div 
-class="form-group"><label>ご利用目的</label><input 
-type="text" id="input-purpose" style="width:100%; padding:10px; 
-margin-bottom:15px; border:1px solid var(--sub-color); 
-border-radius:4px;"></div> 
-
-       <div 
-class="form-group"><label>苦手食材</label><input 
-type="text" id="input-dislikes" style="width:100%; padding:10px; 
-margin-bottom:15px; border:1px solid var(--sub-color); 
-border-radius:4px;"></div> 
-
-       <div 
-class="form-group"><label>アレルギー</label><input 
-type="text" id="input-allergies" style="width:100%; padding:10px; 
-margin-bottom:15px; border:1px solid var(--sub-color); 
-border-radius:4px;"></div> 
-
-       <p style="font-size:0.8em; color:var(--main-color); 
-margin:15px 0;">ご入力いただきました個人情報は、レストランの予約管理にのみ使用いたします。</p> 
-
-       <label style="display:flex; align-items:center; gap:10px; 
-margin-bottom:20px;"><input type="checkbox" id="agree-privacy">
- 同意する</label> 
-
-       <div style="display:flex; gap:10px;"><button 
-class="cal-btn" style="flex:1; background:var(--sub-color);" 
-onclick="closeModal('res-modal')">戻る</button><button 
-class="cal-btn" style="flex:2;" 
-onclick="submitReservation()">予約確定</button></div> 
-     </div> 
-   </div> 
-
-
-   <div id="msg-modal" class="modal-overlay" style="display:none; 
-position:fixed; top:0; left:0; width:100%; height:100%; z-index:1100; 
-justify-content:center; align-items:center;"> 
-     <div class="modal-content" style="text-align:center;"> 
-       <div id="msg-text" style="margin-bottom:20px;"></div> 
-       <button class="cal-btn" onclick="closeModal('msg-modal')">OK</button> 
-     </div> 
-   </div> 
-
-   <script> 
-     // ★ここは必ず最新のGASウェブアプリURLに書き換えてください 
-
-     const WEB_APP_URL = 
-"https://script.google.com/macros/s/AKfycbwsGXnYIV9N-T8JslrfzniugTQMVOypvFXeOVjWYDAICm5DxyuHKQfFRRQUICsZXP6gRA/exec";
- 
-
-     var currentBooking = {}; 
-     var currentCalendarDate = new Date(); 
-     // 2026年6月以前の場合は初期表示を7月に固定（★変更箇所1） 
-     if (currentCalendarDate.getFullYear() === 2026 && currentCalendarDate.getMonth() < 6) { 
-       currentCalendarDate = new Date(2026, 6, 1); 
-     } 
-     var fullCalendarInstance = null; 
-     var gDeadlineDate, gMaxAcceptDate, gHardEndDate; 
-
-     var slideContainers = document.querySelectorAll('.slideshow-container, .hero-bg, .chef-slideshow'); 
-     slideContainers.forEach(function(container) { 
-       var slides = container.querySelectorAll('.slide'); 
-       var currentSlide = 0; 
-       if (slides.length > 1) { 
-         setInterval(function() { 
-           slides[currentSlide].classList.remove('active'); 
-           currentSlide = (currentSlide + 1) % slides.length; 
-           slides[currentSlide].classList.add('active'); 
-         }, 4000); 
-       } 
-     }); 
-
-     function adjustPeople(diff) { 
-       var input = document.getElementById('input-people'); 
-       var currentVal = parseInt(input.value) || 1; 
-       var max = parseInt(input.max) || 6; 
-       var newVal = currentVal + diff; 
-       if(newVal >= 1 && newVal <= max) { 
-         input.value = newVal; 
-       } 
-     } 
-
-     document.addEventListener('DOMContentLoaded', function() { loadCalendarData(currentCalendarDate); }); 
-     function goToToday() {  
-       var d = new Date(); 
-       // （★変更箇所2） 
-       if (d.getFullYear() === 2026 && d.getMonth() < 6) { 
-         currentCalendarDate = new Date(2026, 6, 1); 
-       } else { 
-         currentCalendarDate = d; 
-       } 
-       loadCalendarData(currentCalendarDate);  
-     } 
-
-     function changeMonth(diff) { currentCalendarDate.setDate(1); 
+        <div class="chef-slideshow" aria-hidden="true"> 
+          <div class="slide active" style="background-image: url('./fl-chef_1.jpg');" title="シェフ 米田武史 1"></div> 
+          <div class="slide" style="background-image: url('./fl-chef_2.jpg');" title="シェフ 米田武史 2"></div> 
+        </div> 
+
+        <div class="chef-bio"> 
+
+          <h3 style="font-size: clamp(1.6em, 3vw, 2.2em); letter-spacing: 4px; margin-bottom: 15px; font-weight: 500;">米田 武史</h3> 
+          <p style="font-size:0.8em; line-height: 1.8; padding: 0px; margin-top: -20px; font-weight: 400;"> 
+            - TAKESHI KOMEDA - 
+          </p> 
+          <div class="cv-list"> 
+
+            <div class="cv-item"><div class="cv-year">1982年</div><div class="cv-desc">奈良県生まれ</div></div> 
+
+            <div class="cv-item"><div class="cv-year">2002年</div><div class="cv-desc">リーガロイヤルホテル大阪 入社</div></div> 
+
+            <div class="cv-item"><div class="cv-year">2013年</div><div class="cv-desc">フランス研修<br>(Maison PIC,Jean François Piège)</div></div> 
+
+            <div class="cv-item"><div class="cv-year">2016年</div><div class="cv-desc">リーガロイヤルホテル小倉レストラン料理長<br>第8回エスコフィエ・フランス料理コンクール優勝</div></div> 
+
+            <div class="cv-item"><div class="cv-year">2017年</div><div class="cv-desc">ひらまつ杯<br>ボキューズ・ドール2019日本代表選考会第3位</div></div> 
+
+            <div class="cv-item"><div class="cv-year">2020年</div><div class="cv-desc">リーガロイヤルホテル大阪<br>レストランシャンボールスーシェフ</div></div> 
+
+            <div class="cv-item"><div class="cv-year">2024年</div><div class="cv-desc">J.S.Aソムリエ<br>取得</div></div> 
+          </div> 
+        </div> 
+      </div> 
+    </section> 
+    
+    <section id="information" class="store-info"> 
+      <h2 class="section-title">INFORMATION</h2> 
+      <div class="info-content"> 
+        <dl class="info-dl"> 
+          <div class="info-row"> 
+            <dt>営業時間</dt> 
+            <dd>完全予約制（カレンダーをご確認ください）</dd> 
+          </div> 
+          <div class="info-row"> 
+            <dt>お支払い方法</dt> 
+            <dd>現金、クレジットカード、各種QRコード決済</dd> 
+          </div> 
+          <div class="info-row"> 
+            <dt>住所</dt> 
+            <dd>兵庫県姫路市本町174<br>アネスティ七番館 1階 AND内</dd> 
+          </div> 
+          <div class="info-row"> 
+            <dt>アクセス</dt> 
+            <dd>徒歩：JR姫路駅より北へ徒歩約12分<br>車：近隣コインパーキングをご利用ください</dd> 
+          </div> 
+        </dl> 
+      </div> 
+      <button class="map-toggle-btn" onclick="toggleMap()" id="map-btn">Google mapで確認する</button> 
+      <div class="map-wrapper" id="map-wrapper"> 
+
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3607.5375886289917!2d134.68652127575038!3d34.832906872873046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3554e100150484a9%3A0xd860494fb7fc4538!2sFrench%20LABO.!5e1!3m2!1sja!2sjp!4v1776672540320!5m2!1sja!2sjp" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> 
+      </div> 
+    </section> 
+  </main> 
+
+  <footer> 
+
+    <p>© <a href="https://www.gpm.co.jp/" target="_blank" rel="noopener">ジーピーエム株式会社</a> All Rights Reserved.</p> 
+    <p><a href="https://french-labo.jp/canc.html" target="_self">キャンセルポリシー</a></p> 
+  </footer> 
+
+  <div id="pw-modal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1100; justify-content:center; align-items:center;">
+    <div class="modal-content" style="text-align:center;">
+      <div style="font-size: 1.1em; font-weight:500; margin-bottom:20px;">限定ページへアクセス</div>
+      <input type="password" id="secret-pw" placeholder="パスワードを入力" style="width:100%; padding:10px; margin-bottom:20px; border:1px solid var(--sub-color); border-radius:4px; text-align:center; font-size:1.1em;">
+      <div style="display:flex; gap:10px;">
+        <button class="cal-btn" style="flex:1; background:var(--sub-color);" onclick="closeModal('pw-modal')">キャンセル</button>
+        <button class="cal-btn" style="flex:1;" onclick="checkPw()">送信</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="res-modal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000; justify-content:center; align-items:center;"> 
+    <div class="modal-content"> 
+
+      <div id="modal-header-text" style="font-size: 1.3em; font-weight:500; text-align:center; margin-bottom:20px; border-bottom:1px solid var(--sub-color); padding-bottom:15px;">予約フォーム</div> 
+
+      <div class="form-group"><label>お名前 *</label><input type="text" id="input-name" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div> 
+
+      <div class="form-group"><label>電話番号 *</label><input type="tel" id="input-phone" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div> 
+
+      <div class="form-group"><label>メールアドレス *</label><input type="email" id="input-email" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div> 
+      <div class="form-group"> 
+        <label>人数 * (最大<span id="max-people-label">6</span>名)</label> 
+        <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px; margin-top:5px;"> 
+
+          <button type="button" onclick="adjustPeople(-1)" style="width:45px; height:45px; background:var(--white-color); border:1px solid var(--sub-color); border-radius:4px; font-size:1.5em; cursor:pointer; color:var(--main-color); display:flex; justify-content:center; align-items:center;">-</button> 
+
+          <input type="number" id="input-people" min="1" max="6" value="1" style="width:60px; height:45px; border:none; border-bottom:1px solid var(--sub-color); text-align:center; font-size:1.2em; background: transparent; color:var(--main-color); outline:none; pointer-events:none;" readonly> 
+
+          <button type="button" onclick="adjustPeople(1)" style="width:45px; height:45px; background:var(--white-color); border:1px solid var(--sub-color); border-radius:4px; font-size:1.5em; cursor:pointer; color:var(--main-color); display:flex; justify-content:center; align-items:center;">+</button> 
+        </div> 
+      </div> 
+
+      <div class="form-group"><label>ご利用目的</label><input type="text" id="input-purpose" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div> 
+
+      <div class="form-group"><label>苦手食材</label><input type="text" id="input-dislikes" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div> 
+
+      <div class="form-group"><label>アレルギー</label><input type="text" id="input-allergies" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div> 
+
+      <p style="font-size:0.8em; color:var(--main-color); margin:15px 0;">ご入力いただきました個人情報は、レストランの予約管理にのみ使用いたします。</p> 
+
+      <label style="display:flex; align-items:center; gap:10px; margin-bottom:20px;"><input type="checkbox" id="agree-privacy"> 同意する</label> 
+
+      <div style="display:flex; gap:10px;"><button class="cal-btn" style="flex:1; background:var(--sub-color);" onclick="closeModal('res-modal')">戻る</button><button class="cal-btn" style="flex:2;" onclick="submitReservation()">予約確定</button></div> 
+    </div> 
+  </div> 
+
+  <div id="msg-modal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1100; justify-content:center; align-items:center;"> 
+    <div class="modal-content" style="text-align:center;"> 
+      <div id="msg-text" style="margin-bottom:20px;"></div> 
+      <button class="cal-btn" onclick="closeModal('msg-modal')">OK</button> 
+    </div> 
+  </div> 
+
+  <script> 
+    // ★ここは必ず最新のGASウェブアプリURLに書き換えてください 
+
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwsGXnYIV9N-T8JslrfzniugTQMVOypvFXeOVjWYDAICm5DxyuHKQfFRRQUICsZXP6gRA/exec";
+
+    var currentBooking = {}; 
+    var currentCalendarDate = new Date(); 
+    // 2026年6月以前の場合は初期表示を7月に固定（★変更箇所1） 
+    if (currentCalendarDate.getFullYear() === 2026 && currentCalendarDate.getMonth() < 6) { 
+      currentCalendarDate = new Date(2026, 6, 1); 
+    } 
+    var fullCalendarInstance = null; 
+    var gDeadlineDate, gMaxAcceptDate, gHardEndDate; 
+
+    var slideContainers = document.querySelectorAll('.slideshow-container, .hero-bg, .chef-slideshow'); 
+    slideContainers.forEach(function(container) { 
+      var slides = container.querySelectorAll('.slide'); 
+      var currentSlide = 0; 
+      if (slides.length > 1) { 
+        setInterval(function() { 
+          slides[currentSlide].classList.remove('active'); 
+          currentSlide = (currentSlide + 1) % slides.length; 
+          slides[currentSlide].classList.add('active'); 
+        }, 4000); 
+      } 
+    }); 
+
+    function toggleMap() { 
+      var wrapper = document.getElementById('map-wrapper'); 
+      var btn = document.getElementById('map-btn'); 
+      if (wrapper.classList.contains('open')) { 
+        wrapper.classList.remove('open'); 
+        btn.innerText = 'Google mapで確認する'; 
+      } else { 
+        wrapper.classList.add('open'); 
+        btn.innerText = '地図を閉じる'; 
+      } 
+    } 
+
+    function adjustPeople(diff) { 
+      var input = document.getElementById('input-people'); 
+      var currentVal = parseInt(input.value) || 1; 
+      var max = parseInt(input.max) || 6; 
+      var newVal = currentVal + diff; 
+      if(newVal >= 1 && newVal <= max) { 
+        input.value = newVal; 
+      } 
+    } 
+
+    document.addEventListener('DOMContentLoaded', function() { loadCalendarData(currentCalendarDate); }); 
+    function goToToday() {  
+      var d = new Date(); 
+      // （★変更箇所2） 
+      if (d.getFullYear() === 2026 && d.getMonth() < 6) { 
+        currentCalendarDate = new Date(2026, 6, 1); 
+      } else { 
+        currentCalendarDate = d; 
+      } 
+      loadCalendarData(currentCalendarDate);  
+    } 
+
+    function changeMonth(diff) { currentCalendarDate.setDate(1); 
 currentCalendarDate.setMonth(currentCalendarDate.getMonth() + diff); 
 loadCalendarData(currentCalendarDate); } 
 
-     function loadCalendarData(dateObj) { 
-       document.getElementById('loading-overlay').style.display = 'flex'; 
-       var yearMonthStr = dateObj.getFullYear() + "-" + ('0' + (dateObj.getMonth() + 1)).slice(-2); 
+    function loadCalendarData(dateObj) { 
+      document.getElementById('loading-overlay').style.display = 'flex'; 
+      var yearMonthStr = dateObj.getFullYear() + "-" + ('0' + (dateObj.getMonth() + 1)).slice(-2); 
 
-       document.getElementById('current-month-label').innerText = 
-dateObj.getFullYear() + "年 " + (dateObj.getMonth() + 1) + "月"; 
-        
-       var baseDate = new Date(); 
-       // （★変更箇所3） 
-       if (baseDate.getFullYear() === 2026 && baseDate.getMonth() < 6) { 
-         baseDate = new Date(2026, 6, 1); 
-       } 
-
-       document.getElementById('btn-prev-month').disabled = 
-(dateObj.getFullYear() === baseDate.getFullYear() && 
-dateObj.getMonth() === baseDate.getMonth()); 
-        
-       fetch(WEB_APP_URL + '?action=getCalendarData&yearMonth=' + yearMonthStr) 
-         .then(function(response) { return response.json(); }) 
-         .then(function(data) { renderCalendar(data); }) 
-         .catch(function(error) { 
-           console.error('Error:', error); 
-           alert("カレンダーの読み込みに失敗しました。"); 
-           document.getElementById('loading-overlay').style.display = 'none'; 
-         }); 
-     } 
-
-     function renderCalendar(data) { 
-       document.getElementById('loading-overlay').style.display = 'none'; 
-       var eventsArray = []; 
-       var today = new Date(); today.setHours(0,0,0,0); 
-        
-       gDeadlineDate = new Date(today);  
-       gDeadlineDate.setDate(today.getDate() + (parseInt(data.deadlineDays) || 0)); 
-       gMaxAcceptDate = new Date(today);  
-       gMaxAcceptDate.setDate(today.getDate() + (parseInt(data.maxDays) || 60)); 
-       gHardEndDate = new Date(data.endDate || "2099-12-31");  
-       gHardEndDate.setHours(23,59,59); 
-
-       var displayYear = parseInt(data.currentYearMonth.split('-')[0]); 
-       var displayMonth = parseInt(data.currentYearMonth.split('-')[1]) - 1; 
-       var dateInMonth = new Date(displayYear, displayMonth, 1); 
-        
-       var maxSeats = data.maxSeats || 6; 
-        
-       while(dateInMonth.getMonth() === displayMonth) { 
-
-         var dateStr = dateInMonth.getFullYear() + '-' + ('0' + 
-(dateInMonth.getMonth() + 1)).slice(-2) + '-' + ('0' + 
-dateInMonth.getDate()).slice(-2); 
-          
-         // 追加: 制限の判定を2つに分割（未来の制限期間か、締切が過ぎたか） 
-         var isFutureRestricted = (dateInMonth > gMaxAcceptDate) || (dateInMonth > gHardEndDate); 
-         var isDeadlinePassed = (dateInMonth < gDeadlineDate); 
-          
-         // 未来の制限期間でなければイベントを描画（締切後の日付にも表示を出す） 
-         if (!isFutureRestricted) { 
-           // 「終日」の場合は1つの枠として2段で表示 
-           if (data.holidayMap[dateStr] === "終日") { 
-             eventsArray.push({ 
-               title: 'Prep Day\n(開業準備)', 
-               start: dateStr, 
-               classNames: ['holiday-event', 'full-day-holiday'] 
-             }); 
-           } else { 
-             // それ以外（個別枠）の場合は通常通り判定 
-             ['昼', '夜'].forEach(function(slot) { 
-               var slotKey = dateStr + '_' + slot; 
-               var isHoliday = (data.holidayMap[slotKey] === "休業"); 
-
-               if (isHoliday) { 
-                 eventsArray.push({ title: slot + '：Prep Day', start: dateStr, classNames: ['holiday-event'] }); 
-               } else { 
-                 var booked = data.bookedCounts[slotKey] || 0; 
-                 var remain = maxSeats - booked; 
-                  
-                 var titleText = slot + '：' + (remain > 0 ? '残' + remain : '満'); 
-                  
-                 // 予約締切を過ぎていて、かつ残席がある場合は「受付終了」とする 
-                 if (isDeadlinePassed && remain > 0) { 
-                   titleText = slot + '：受付終了'; 
-                 } 
-
-                 eventsArray.push({  
-                   title: titleText,  
-                   start: dateStr,  
-                   // 締切を過ぎているか、満席の場合はグレーのイベントにする 
-                   classNames: [(isDeadlinePassed || remain <= 0) ? 'full-event' : 'available-event'], 
-                   extendedProps: { timeSlot: slot, remain: remain, restricted: isDeadlinePassed } 
-                 }); 
-               } 
-             }); 
-           } 
-         } 
-         dateInMonth.setDate(dateInMonth.getDate() + 1); 
-       } 
-
-       if (!fullCalendarInstance) { 
-         fullCalendarInstance = new FullCalendar.Calendar(document.getElementById('calendar'), { 
-
-           initialView: 'dayGridMonth', locale: 'ja', contentHeight: 
-'auto', headerToolbar: false, showNonCurrentDates: false, firstDay: 1, 
-           dayCellClassNames: function(arg) { 
-             if (!gDeadlineDate) return []; 
-             // 締切日前であってもマスのグレーアウトはしない。未来の受付期間外のみグレーアウト 
-             if (arg.date > gMaxAcceptDate || arg.date > gHardEndDate) return ['custom-restricted-day']; 
-             return []; 
-           }, 
-           eventClick: function(info) { 
-
-             if (info.event.extendedProps.restricted || 
-!info.event.extendedProps.remain || info.event.extendedProps.remain 
-<= 0) return; 
-
-             currentBooking = { date: info.event.startStr, slot: 
-info.event.extendedProps.timeSlot, remain: 
-info.event.extendedProps.remain }; 
-             document.getElementById('modal-header-text').innerText = currentBooking.date + " (" + currentBooking.slot + ")"; 
-             var currentMax = Math.min(currentBooking.remain, 6); 
-             document.getElementById('input-people').max = currentMax; 
-             document.getElementById('max-people-label').innerText = currentMax; 
-             document.getElementById('input-people').value = 1; 
-             document.getElementById('res-modal').style.display = 'flex'; 
-           } 
-         }); 
-         fullCalendarInstance.render(); 
-       } 
-       fullCalendarInstance.gotoDate(data.currentYearMonth + '-01'); 
-       fullCalendarInstance.removeAllEvents(); 
-       fullCalendarInstance.addEventSource(eventsArray); 
-     } 
-
-     function closeModal(id) { document.getElementById(id).style.display = 'none'; } 
+      document.getElementById('current-month-label').innerText = dateObj.getFullYear() + "年 " + (dateObj.getMonth() + 1) + "月"; 
       
-     function submitReservation() { 
-       var name = document.getElementById('input-name').value; 
-       var phone = document.getElementById('input-phone').value; 
-       var email = document.getElementById('input-email').value; 
-       var people = parseInt(document.getElementById('input-people').value, 10); 
-       var dislikes = document.getElementById('input-dislikes').value; 
-       var allergies = document.getElementById('input-allergies').value; 
-       var purpose = document.getElementById('input-purpose').value; 
+      var baseDate = new Date(); 
+      // （★変更箇所3） 
+      if (baseDate.getFullYear() === 2026 && baseDate.getMonth() < 6) { 
+        baseDate = new Date(2026, 6, 1); 
+      } 
 
-       if(!name || !phone || !email || !people || 
-!document.getElementById('agree-privacy').checked) { 
-alert("必須項目を入力してください"); return; } 
-        
-       closeModal('res-modal'); 
-       document.getElementById('loading-overlay').style.display = 'flex'; 
-        
-       var payload = {  
-         date: currentBooking.date,  
-         slot: currentBooking.slot,  
-         name: name,  
-         people: people,  
-         email: email,  
-         phone: phone,  
-         purpose: purpose,  
-         dislikes: dislikes,  
-         allergy: allergies  
-       }; 
+      document.getElementById('btn-prev-month').disabled = (dateObj.getFullYear() === baseDate.getFullYear() && dateObj.getMonth() === baseDate.getMonth()); 
+      
+      fetch(WEB_APP_URL + '?action=getCalendarData&yearMonth=' + yearMonthStr) 
+        .then(function(response) { return response.json(); }) 
+        .then(function(data) { renderCalendar(data); }) 
+        .catch(function(error) { 
+          console.error('Error:', error); 
+          alert("カレンダーの読み込みに失敗しました。"); 
+          document.getElementById('loading-overlay').style.display = 'none'; 
+        }); 
+    } 
 
-       fetch(WEB_APP_URL, { 
-         method: 'POST', 
-         headers: { 'Content-Type': 'text/plain' }, 
-         body: JSON.stringify(payload) 
-       }) 
-       .then(function(response) {  
-         if (!response.ok) throw new Error('Network response was not ok'); 
-         return response.json();  
-       }) 
-       .then(function(res) { 
-         if(res.status === "OK") { 
-           document.getElementById('msg-text').innerHTML = "予約が完了しました。"; 
-           document.getElementById('msg-modal').style.display = 'flex'; 
-           document.getElementById('input-name').value = ''; 
-           document.getElementById('input-phone').value = ''; 
-           document.getElementById('input-email').value = ''; 
-           document.getElementById('input-purpose').value = ''; 
-           document.getElementById('input-dislikes').value = ''; 
-           document.getElementById('input-allergies').value = ''; 
-           document.getElementById('agree-privacy').checked = false; 
-           loadCalendarData(currentCalendarDate); 
-         } else { alert("エラー: " + res.message); document.getElementById('loading-overlay').style.display = 'none'; } 
-       }) 
-       .catch(function(error) { 
-         console.error('Error:', error); 
-         alert("通信エラーが発生しました。ブラウザをリロードして再度お試しください。"); 
-         document.getElementById('loading-overlay').style.display = 'none'; 
-       }); 
-     } 
-   </script> 
- </body> 
- </html>
+    function renderCalendar(data) { 
+      document.getElementById('loading-overlay').style.display = 'none'; 
+      var eventsArray = []; 
+      var today = new Date(); today.setHours(0,0,0,0); 
+      
+      gDeadlineDate = new Date(today);  
+      gDeadlineDate.setDate(today.getDate() + (parseInt(data.deadlineDays) || 0)); 
+      gMaxAcceptDate = new Date(today);  
+      gMaxAcceptDate.setDate(today.getDate() + (parseInt(data.maxDays) || 60)); 
+      gHardEndDate = new Date(data.endDate || "2099-12-31");  
+      gHardEndDate.setHours(23,59,59); 
+
+      var displayYear = parseInt(data.currentYearMonth.split('-')[0]); 
+      var displayMonth = parseInt(data.currentYearMonth.split('-')[1]) - 1; 
+      var dateInMonth = new Date(displayYear, displayMonth, 1); 
+      
+      var maxSeats = data.maxSeats || 6; 
+      
+      while(dateInMonth.getMonth() === displayMonth) { 
+
+        var dateStr = dateInMonth.getFullYear() + '-' + ('0' + (dateInMonth.getMonth() + 1)).slice(-2) + '-' + ('0' + dateInMonth.getDate()).slice(-2); 
+        
+        // 追加: 制限の判定を2つに分割（未来の制限期間か、締切が過ぎたか） 
+        var isFutureRestricted = (dateInMonth > gMaxAcceptDate) || (dateInMonth > gHardEndDate); 
+        var isDeadlinePassed = (dateInMonth < gDeadlineDate); 
+        
+        // 未来の制限期間でなければイベントを描画（締切後の日付にも表示を出す） 
+        if (!isFutureRestricted) { 
+          // 「終日」の場合は1つの枠として2段で表示 
+          if (data.holidayMap[dateStr] === "終日") { 
+            eventsArray.push({ 
+              title: 'Prep Day\n(開業準備)', 
+              start: dateStr, 
+              classNames: ['holiday-event', 'full-day-holiday'] 
+            }); 
+          } else { 
+            // それ以外（個別枠）の場合は通常通り判定 
+            ['昼', '夜'].forEach(function(slot) { 
+              var slotKey = dateStr + '_' + slot; 
+              var isHoliday = (data.holidayMap[slotKey] === "休業"); 
+
+              if (isHoliday) { 
+                eventsArray.push({ title: slot + '：Prep Day', start: dateStr, classNames: ['holiday-event'] }); 
+              } else { 
+                var booked = data.bookedCounts[slotKey] || 0; 
+                var remain = maxSeats - booked; 
+                
+                var titleText = slot + '：' + (remain > 0 ? '残' + remain : '満'); 
+                
+                // 予約締切を過ぎていて、かつ残席がある場合は「受付終了」とする 
+                if (isDeadlinePassed && remain > 0) { 
+                  titleText = slot + '：受付終了'; 
+                } 
+
+                eventsArray.push({  
+                  title: titleText,  
+                  start: dateStr,  
+                  // 締切を過ぎているか、満席の場合はグレーのイベントにする 
+                  classNames: [(isDeadlinePassed || remain <= 0) ? 'full-event' : 'available-event'], 
+                  extendedProps: { timeSlot: slot, remain: remain, restricted: isDeadlinePassed } 
+                }); 
+              } 
+            }); 
+          } 
+        } 
+        dateInMonth.setDate(dateInMonth.getDate() + 1); 
+      } 
+
+      if (!fullCalendarInstance) { 
+        fullCalendarInstance = new FullCalendar.Calendar(document.getElementById('calendar'), { 
+
+          initialView: 'dayGridMonth', locale: 'ja', contentHeight: 'auto', headerToolbar: false, showNonCurrentDates: false, firstDay: 1, 
+          dayCellClassNames: function(arg) { 
+            if (!gDeadlineDate) return []; 
+            // 締切日前であってもマスのグレーアウトはしない。未来の受付期間外のみグレーアウト 
+            if (arg.date > gMaxAcceptDate || arg.date > gHardEndDate) return ['custom-restricted-day']; 
+            return []; 
+          }, 
+          eventClick: function(info) { 
+
+            if (info.event.extendedProps.restricted || !info.event.extendedProps.remain || info.event.extendedProps.remain <= 0) return; 
+
+            currentBooking = { date: info.event.startStr, slot: info.event.extendedProps.timeSlot, remain: info.event.extendedProps.remain }; 
+            document.getElementById('modal-header-text').innerText = currentBooking.date + " (" + currentBooking.slot + ")"; 
+            var currentMax = Math.min(currentBooking.remain, 6); 
+            document.getElementById('input-people').max = currentMax; 
+            document.getElementById('max-people-label').innerText = currentMax; 
+            document.getElementById('input-people').value = 1; 
+            document.getElementById('res-modal').style.display = 'flex'; 
+          } 
+        }); 
+        fullCalendarInstance.render(); 
+      } 
+      fullCalendarInstance.gotoDate(data.currentYearMonth + '-01'); 
+      fullCalendarInstance.removeAllEvents(); 
+      fullCalendarInstance.addEventSource(eventsArray); 
+    } 
+
+    function openDessertModal(date, time) { 
+      currentBooking = { date: date, slot: time, remain: 6 }; 
+
+      document.getElementById('modal-header-text').innerText = "デセールご予約" + currentBooking.date + " (" + currentBooking.slot + ")"; 
+      var currentMax = 6; 
+      document.getElementById('input-people').max = currentMax; 
+      document.getElementById('max-people-label').innerText = currentMax; 
+      document.getElementById('input-people').value = 1; 
+      document.getElementById('res-modal').style.display = 'flex'; 
+    } 
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; } 
+
+    function openPwModal() {
+      document.getElementById('secret-pw').value = '';
+      document.getElementById('pw-modal').style.display = 'flex';
+    }
+
+    function checkPw() {
+      var pw = document.getElementById('secret-pw').value;
+      if (pw === "202611-ro") {
+        window.location.href = "https://www.instagram.com/french__labo/";
+      } else {
+        alert("PWが異なります");
+        document.getElementById('secret-pw').value = '';
+      }
+    }
+    
+    function submitReservation() { 
+      var name = document.getElementById('input-name').value; 
+      var phone = document.getElementById('input-phone').value; 
+      var email = document.getElementById('input-email').value; 
+      var people = parseInt(document.getElementById('input-people').value, 10); 
+      var dislikes = document.getElementById('input-dislikes').value; 
+      var allergies = document.getElementById('input-allergies').value; 
+      var purpose = document.getElementById('input-purpose').value; 
+
+      if(!name || !phone || !email || !people || !document.getElementById('agree-privacy').checked) { alert("必須項目を入力してください"); return; } 
+      
+      closeModal('res-modal'); 
+      document.getElementById('loading-overlay').style.display = 'flex'; 
+      
+      var payload = {  
+        date: currentBooking.date,  
+        slot: currentBooking.slot,  
+        name: name,  
+        people: people,  
+        email: email,  
+        phone: phone,  
+        purpose: purpose,  
+        dislikes: dislikes,  
+        allergy: allergies  
+      }; 
+
+      fetch(WEB_APP_URL, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'text/plain' }, 
+        body: JSON.stringify(payload) 
+      }) 
+      .then(function(response) {  
+        if (!response.ok) throw new Error('Network response was not ok'); 
+        return response.json();  
+      }) 
+      .then(function(res) { 
+        if(res.status === "OK") { 
+          document.getElementById('msg-text').innerHTML = "予約が完了しました。"; 
+          document.getElementById('msg-modal').style.display = 'flex'; 
+          document.getElementById('input-name').value = ''; 
+          document.getElementById('input-phone').value = ''; 
+          document.getElementById('input-email').value = ''; 
+          document.getElementById('input-purpose').value = ''; 
+          document.getElementById('input-dislikes').value = ''; 
+          document.getElementById('input-allergies').value = ''; 
+          document.getElementById('agree-privacy').checked = false; 
+          loadCalendarData(currentCalendarDate); 
+        } else { alert("エラー: " + res.message); document.getElementById('loading-overlay').style.display = 'none'; } 
+      }) 
+      .catch(function(error) { 
+        console.error('Error:', error); 
+        alert("通信エラーが発生しました。ブラウザをリロードして再度お試しください。"); 
+        document.getElementById('loading-overlay').style.display = 'none'; 
+      }); 
+    } 
+  </script> 
+</body> 
+</html>
