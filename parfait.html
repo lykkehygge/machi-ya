@@ -1,566 +1,259 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>町家の日 AR Experience</title>
-    
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-    
-    <script>
-      // ▼▼▼ ジェスチャー検出 (1本指の移動と2本指の拡大縮小) ▼▼▼
-      AFRAME.registerComponent("gesture-detector", {
-        init: function() {
-          this.internalState = { previousState: null };
-          this.emitGestureEvent = this.emitGestureEvent.bind(this);
-          window.addEventListener("touchstart", this.emitGestureEvent);
-          window.addEventListener("touchend", this.emitGestureEvent);
-          window.addEventListener("touchmove", this.emitGestureEvent);
-        },
-        emitGestureEvent: function(event) {
-          const currentState = this.getTouchState(event);
-          const previousState = this.internalState.previousState;
-          
-          if (previousState && currentState && currentState.touchCount === previousState.touchCount) {
-            const eventDetail = {
-              positionChange: { 
-                x: currentState.position.x - previousState.position.x, 
-                y: currentState.position.y - previousState.position.y 
-              }
-            };
-            if (currentState.touchCount === 1) {
-              this.el.emit("onefingermove", eventDetail);
-            } else if (currentState.touchCount === 2) {
-              eventDetail.spreadChange = currentState.spread - previousState.spread;
-              eventDetail.spread = currentState.spread;
-              this.el.emit("twofingermove", eventDetail);
-            }
-          }
-          this.internalState.previousState = currentState;
-        },
-        getTouchState: function(event) {
-          if (event.touches.length === 0) return null;
-          if (event.touches.length === 1) {
-            return { touchCount: 1, position: { x: event.touches[0].pageX, y: event.touches[0].pageY } };
-          }
-          if (event.touches.length === 2) {
-            const spread = Math.hypot(
-              event.touches[0].pageX - event.touches[1].pageX, 
-              event.touches[0].pageY - event.touches[1].pageY
-            );
-            return { 
-              touchCount: 2, 
-              position: { 
-                x: (event.touches[0].pageX + event.touches[1].pageX) / 2, 
-                y: (event.touches[0].pageY + event.touches[1].pageY) / 2 
-              }, spread: spread 
-            };
-          }
-          return null;
-        }
-      });
+<html lang="ja">
+<head>
+<script src="https://analytics.ahrefs.com/analytics.js" data-key="CzEATMgG4Ka9IIE5KuN/Lg" async></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0LLZ5ZXX9P"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-      // ▼▼▼ スライドショーコンポーネント (プレフィックス自動取得・ズーム＆移動機能付き) ▼▼▼
-      AFRAME.registerComponent('auto-slideshow', {
-        schema: { 
-          prefix: { type: 'string' }, // 's1', 's2', 's3' などを指定
-          interval: { type: 'number', default: 3500 },
-          targetAspectRatio: { type: 'number', default: 1.65 } // ★日本の名刺のアスペクト比(幅/高さ)のデフォルト値
-        },
-        init: function () {
-          // --- 画像リストの自動構築 ---
-          // 指定されたプレフィックス(例: "s1-")で始まる画像要素を全て取得
-          const imgs = Array.from(document.querySelectorAll(`img[id^="${this.data.prefix}-"]`));
-          
-          // IDの数字部分で正しくソートする (s1-2の次にs1-10が来るようにする)
-          imgs.sort((a, b) => {
-            const numA = parseInt(a.id.replace(`${this.data.prefix}-`, ''), 10);
-            const numB = parseInt(b.id.replace(`${this.data.prefix}-`, ''), 10);
-            return numA - numB;
-          });
-          
-          this.srcArray = imgs.map(img => '#' + img.id);
+  gtag('config', 'G-0LLZ5ZXX9P');
+</script>
 
-          // 保存されたインデックスの取得
-          this.storageKey = 'slide_index_' + this.el.id;
-          const savedIndex = sessionStorage.getItem(this.storageKey);
-          this.index = savedIndex !== null ? parseInt(savedIndex, 10) : 0;
-          
-          // 万が一要素数が減っていた場合のフォールバック
-          if (this.index >= this.srcArray.length) { this.index = 0; }
-          
-          // 最初の画像を設定
-          if (this.srcArray.length > 0) {
-            this.el.setAttribute('src', this.srcArray[this.index]);
-          }
-          this.el.setAttribute('material', { shader: 'flat', transparent: true, opacity: 1 });
-          
-          this.timer = null;
-          this.isPlaying = false;
-          this.isAnimating = false; 
-          
-          this.scaleFactor = 1.0;
-          this.offsetX = 0;
-          this.offsetY = 0;
-          
-          this.el.sceneEl.addEventListener('twofingermove', this.handleZoom.bind(this));
-          this.el.sceneEl.addEventListener('onefingermove', this.handlePan.bind(this));
-          
-          if (this.srcArray.length > 0) {
-            const img = document.querySelector(this.srcArray[this.index]);
-            if (img.complete) { this.adjustSize(img); } 
-            else { img.onload = () => this.adjustSize(img); }
-          }
-        },
-        handleZoom: function(e) {
-            if (window.activeSlideshowComponent !== this) return;
-            const prevSpread = e.detail.spread - e.detail.spreadChange;
-            if (prevSpread === 0) return;
-            
-            const oldRepeat = 1 / this.scaleFactor;
-            this.scaleFactor *= (e.detail.spread / prevSpread);
-            this.scaleFactor = Math.min(Math.max(this.scaleFactor, 1.0), 4.0); 
-            
-            const newRepeat = 1 / this.scaleFactor;
-            const diff = oldRepeat - newRepeat;
-            
-            this.offsetX += diff / 2;
-            this.offsetY += diff / 2;
-            
-            this.clampOffset();
-            this.updateMaterial();
-        },
-        handlePan: function(e) {
-            if (window.activeSlideshowComponent !== this || this.scaleFactor <= 1.0) return;
-            
-            const speed = 1.2; 
-            const dx = (e.detail.positionChange.x / window.innerWidth) * speed;
-            const dy = (e.detail.positionChange.y / window.innerHeight) * speed;
-            
-            this.offsetX -= dx / this.scaleFactor;
-            this.offsetY += dy / this.scaleFactor;
-            
-            this.clampOffset();
-            this.updateMaterial();
-        },
-        clampOffset: function() {
-            const repeat = 1 / this.scaleFactor;
-            const maxOffset = 1.0 - repeat;
-            this.offsetX = Math.min(Math.max(this.offsetX, 0), maxOffset);
-            this.offsetY = Math.min(Math.max(this.offsetY, 0), maxOffset);
-        },
-        updateMaterial: function() {
-            const repeat = 1 / this.scaleFactor;
-            this.el.setAttribute('material', 'repeat', `${repeat} ${repeat}`);
-            this.el.setAttribute('material', 'offset', `${this.offsetX} ${this.offsetY}`);
-        },
-        resetZoom: function() {
-            this.scaleFactor = 1.0;
-            this.offsetX = 0;
-            this.offsetY = 0;
-            this.updateMaterial();
-        },
-        // ▼▼▼ 【修正】画像をターゲット(名刺)の高さ内にピッタリ収める計算 ▼▼▼
-        adjustSize: function(img) {
-          const w = img.naturalWidth;
-          const h = img.naturalHeight;
-          const imgRatio = w / h; // 画像のアスペクト比(幅/高さ)
-          const targetRatio = this.data.targetAspectRatio; // ターゲットのアスペクト比(幅/高さ)
-          
-          // ARエンジンではターゲットの幅が「1.0」として扱われます。
-          // ターゲットの高さは「1.0 / targetRatio」となります。
-
-          if (imgRatio > targetRatio) {
-            // 【横向き画像】ターゲットよりも横長(例: 16:9)の場合
-            // -> 横幅をターゲットいっぱい(1.0)にする。高さは自動的にターゲット内に収まる。
-            this.el.setAttribute('width', 1.0);
-            this.el.setAttribute('height', 1.0 / imgRatio);
-          } else {
-            // 【縦向き画像・正方形など】ターゲットと同じか、ターゲットよりも縦長の場合
-            // -> 縦幅をターゲットの高さ(1.0 / targetRatio)に固定する。横幅は縮小されて収まる。
-            const targetHeight = 1.0 / targetRatio;
-            this.el.setAttribute('height', targetHeight);
-            this.el.setAttribute('width', targetHeight * imgRatio);
-          }
-        },
-        startSlide: function() {
-          if (this.timer || this.srcArray.length <= 1) return;
-          this.isPlaying = true;
-          this.timer = setInterval(() => { this.changeSlide(1); }, this.data.interval);
-        },
-        stopSlide: function() {
-          if (this.timer) clearInterval(this.timer);
-          this.timer = null;
-          this.isPlaying = false;
-        },
-        changeSlide: function (dir) {
-          if (this.isAnimating || this.srcArray.length <= 1) return;
-          this.isAnimating = true;
-          
-          if (this.isPlaying) {
-            clearInterval(this.timer);
-            this.timer = setInterval(() => { this.changeSlide(1); }, this.data.interval);
-          }
-
-          const el = this.el;
-          el.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 400, easing: 'easeInOutQuad' });
-          
-          setTimeout(() => {
-            this.resetZoom(); 
-            
-            this.index = (this.index + dir + this.srcArray.length) % this.srcArray.length;
-            sessionStorage.setItem(this.storageKey, this.index); 
-            
-            el.setAttribute('src', this.srcArray[this.index]);
-            
-            const img = document.querySelector(this.srcArray[this.index]);
-            if(img.complete) { this.adjustSize(img); } 
-            else { img.onload = () => this.adjustSize(img); }
-            
-            el.removeAttribute('animation');
-            el.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 400, easing: 'easeInOutQuad' });
-            
-            setTimeout(() => { this.isAnimating = false; }, 400); 
-          }, 400);
-        }
-      });
-
-      // 横向き対策：ARエンジンの再構築
-      window.addEventListener('orientationchange', () => {
-        const loadingDiv = document.getElementById('loading');
-        const loadingText = document.getElementById('loading-text');
-        if(loadingDiv && loadingText) {
-            loadingDiv.style.display = 'flex';
-            loadingDiv.style.opacity = '1';
-            loadingText.innerText = "ADJUSTING CAMERA...";
-        }
-        setTimeout(() => { window.location.reload(); }, 600);
-      });
-    </script>
-
-    <style>
-      /* 完全固定のベースデザイン */
-      html, body { 
-        margin: 0; padding: 0; width: 100%; height: 100%; 
-        overflow: hidden; position: fixed; 
-        font-family: "Yu Mincho", "Hiragino Mincho ProN", serif; 
-        background: #000; 
-      }
-      
-      /* カメラフレーム (太さ24pxのグラデーション枠) */
-      #camera-frame {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        pointer-events: none; z-index: 7999; box-sizing: border-box;
-        padding: 24px; 
-        background: radial-gradient(circle, rgba(58,58,58,0.9) 0%, rgba(0,0,0,1) 100%);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-      }
-      #camera-vignette {
-        position: fixed; top: 24px; left: 24px; right: 24px; bottom: 24px;
-        box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
-        pointer-events: none; z-index: 7998;
-      }
-      .corner { position: absolute; width: 30px; height: 30px; border-color: rgba(255,255,255,0.4); border-style: solid; }
-      .top-left { top: 40px; left: 40px; border-width: 1px 0 0 1px; }
-      .top-right { top: 40px; right: 40px; border-width: 1px 1px 0 0; }
-      .bottom-left { bottom: 40px; left: 40px; border-width: 0 0 1px 1px; }
-      .bottom-right { bottom: 40px; right: 40px; border-width: 0 1px 1px 0; }
-
-      /* ローディング画面 */
-      #loading { 
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        background: radial-gradient(circle, #2a2a2a 0%, #000 100%); 
-        z-index: 99999; display: flex; flex-direction: column; 
-        justify-content: center; align-items: center; transition: opacity 0.5s ease-out; 
-      }
-      .loader { 
-        width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.1); 
-        border-top: 1px solid #fff; border-radius: 50%; 
-        animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite; 
-      }
-      #loading-text { margin-top: 25px; color: #fff; font-size: 11px; letter-spacing: 4px; font-weight: 300; opacity: 0.8; }
-      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-      /* 共通UIパーツ設定 */
-      .ui-layer { position: fixed; inset: 0; pointer-events: none; z-index: 9000; }
-      .scan-guide { 
-        position: absolute; color: rgba(255,255,255,0.9); font-size: 13px; letter-spacing: 2px; 
-        background: rgba(0,0,0,0.5); padding: 12px 24px; border-radius: 30px;
-        backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);
-        transition: opacity 0.5s ease; white-space: nowrap;
-      }
-      .controls-panel {
-        position: absolute; display: flex; align-items: center; gap: 20px;
-        background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        opacity: 0; pointer-events: none; transition: opacity 0.5s ease, transform 0.5s ease;
-      }
-      .controls-panel.active { opacity: 1; pointer-events: auto; }
-      .ctrl-btn { background: none; border: none; outline: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; opacity: 0.8; transition: opacity 0.2s; }
-      .ctrl-btn:active { opacity: 0.4; }
-      .ctrl-btn svg { width: 22px; height: 22px; fill: white; }
-      .ctrl-btn-stroke svg { fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-      .footer-frame { position: absolute; }
-      .footer-text { color: #fff; font-size: 16px; letter-spacing: 6px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
-
-      /* 縦向き専用レイアウト */
-      @media (orientation: portrait) {
-        #ui-landscape { display: none !important; }
-        #ui-portrait { display: block !important; }
-        
-        #ui-portrait .scan-guide { top: max(10dvh, 70px); left: 50%; transform: translateX(-50%); }
-        #ui-portrait .controls-panel { 
-            bottom: max(12dvh, 120px); left: 50%; 
-            transform: translateX(-50%) translateY(20px); 
-            flex-direction: row; padding: 10px 25px; 
-        }
-        #ui-portrait .controls-panel.active { transform: translateX(-50%) translateY(0); }
-        #ui-portrait .footer-frame { bottom: max(5dvh, 40px); left: 50%; transform: translateX(-50%); }
-      }
-
-      /* 横向き専用レイアウト */
-      @media (orientation: landscape) {
-        #ui-portrait { display: none !important; }
-        #ui-landscape { display: block !important; }
-        
-        #ui-landscape .scan-guide { top: max(8dvh, 50px); left: 50%; transform: translateX(-50%); }
-        #ui-landscape .controls-panel { 
-            top: 50%; right: max(6dvw, 50px); 
-            transform: translateY(-50%) translateX(20px); 
-            flex-direction: column; padding: 25px 10px; gap: 15px;
-        }
-        #ui-landscape .controls-panel.active { transform: translateY(-50%) translateX(0); }
-        #ui-landscape .footer-frame { bottom: max(8dvh, 40px); right: max(6dvw, 50px); }
-      }
-    </style>
-  </head>
-  <body>
-
-    <div id="camera-frame"></div>
-    <div id="camera-vignette">
-        <div class="corner top-left"></div>
-        <div class="corner top-right"></div>
-        <div class="corner bottom-left"></div>
-        <div class="corner bottom-right"></div>
-    </div>
-
-    <div id="loading"><div class="loader"></div><div id="loading-text">LOADING EXPERIENCE</div></div>
-    
-    <div id="ui-portrait" class="ui-layer">
-      <div class="scan-guide">パネルを映してください</div>
-      <div class="controls-panel">
-        <button class="ctrl-btn ctrl-btn-stroke" onclick="globalPrev()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
-        <button class="ctrl-btn play-pause-btn" onclick="globalTogglePlay()"></button>
-        <button class="ctrl-btn ctrl-btn-stroke" onclick="globalNext()"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
-      </div>
-      <div class="footer-frame"><div class="footer-text">町家の日</div></div>
-    </div>
-
-    <div id="ui-landscape" class="ui-layer">
-      <div class="scan-guide">パネルを映してください</div>
-      <div class="controls-panel">
-        <button class="ctrl-btn ctrl-btn-stroke" onclick="globalPrev()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
-        <button class="ctrl-btn play-pause-btn" onclick="globalTogglePlay()"></button>
-        <button class="ctrl-btn ctrl-btn-stroke" onclick="globalNext()"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
-      </div>
-      <div class="footer-frame"><div class="footer-text">町家の日</div></div>
-    </div>
-
-    <a-scene 
-      mindar-image="imageTargetSrc: ./targets.mind; uiError:yes; uiLoading:no; filterMinCF:0.0001; filterBeta: 0.001;" 
-      color-space="sRGB" 
-      renderer="colorManagement: true; antialias: true;" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false"
-      gesture-detector>
-      
-      <a-assets>
-        <img id="s1-1" src="./s1-1.jpg" />
-        <!-- ... omitted massive image list for brevity in code generation block ... -->
-        <img id="s1-2" src="./s1-2.jpg" />
-        <img id="s3-20" src="./s3-20.jpg" />
-      </a-assets>
-
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-image id="slideshow-1" position="0 0 0" auto-slideshow="prefix: s1; interval: 3500"></a-image>
-      </a-entity>
-
-      <a-entity mindar-image-target="targetIndex: 1">
-        <a-image id="slideshow-2" position="0 0 0" auto-slideshow="prefix: s2; interval: 3500"></a-image>
-      </a-entity>
-
-      <a-entity mindar-image-target="targetIndex: 2">
-        <a-image id="slideshow-3" position="0 0 0" auto-slideshow="prefix: s3; interval: 3500"></a-image>
-      </a-entity>
-
-    </a-scene>
-
-    <script>
-      const loadingDiv = document.getElementById('loading');
-      const sceneEl = document.querySelector('a-scene');
-      
-      const guides = document.querySelectorAll('.scan-guide');
-      const panels = document.querySelectorAll('.controls-panel');
-      const playPauseBtns = document.querySelectorAll('.play-pause-btn');
-      
-      const slide1 = document.getElementById('slideshow-1');
-      const slide2 = document.getElementById('slideshow-2');
-      const slide3 = document.getElementById('slideshow-3');
-
-      const iconPlay = '<svg viewBox="0 0 24 24"><path d="M7 4V20L19 12L7 4Z"></path></svg>';
-      const iconPause = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
-
-      sceneEl.addEventListener('arReady', () => { hideLoading(); });
-      sceneEl.addEventListener('arError', () => { hideLoading(); alert("カメラにアクセスできませんでした。"); });
-      setTimeout(() => { hideLoading(); }, 10000);
-
-      function hideLoading() {
-        if(loadingDiv.style.display !== 'none') {
-            loadingDiv.style.opacity = 0;
-            setTimeout(() => { loadingDiv.style.display = 'none'; }, 500);
-        }
-      }
-
-      window.activeSlideshowComponent = null;
-
-      // 再生状態の復元
-      let savedPlayState = sessionStorage.getItem('globalIsPlaying');
-      let shouldPlay = savedPlayState === null ? true : (savedPlayState === 'true');
-      
-      playPauseBtns.forEach(btn => btn.innerHTML = shouldPlay ? iconPause : iconPlay);
-
-      // グローバル操作
-      window.globalPrev = function() {
-        if (window.activeSlideshowComponent) window.activeSlideshowComponent.changeSlide(-1);
-      };
-      window.globalNext = function() {
-        if (window.activeSlideshowComponent) window.activeSlideshowComponent.changeSlide(1);
-      };
-      window.globalTogglePlay = function() {
-        if (!window.activeSlideshowComponent) return;
-        
-        if (window.activeSlideshowComponent.isPlaying) {
-          window.activeSlideshowComponent.stopSlide();
-          playPauseBtns.forEach(btn => btn.innerHTML = iconPlay);
-          sessionStorage.setItem('globalIsPlaying', 'false');
-          shouldPlay = false;
-        } else {
-          window.activeSlideshowComponent.startSlide();
-          playPauseBtns.forEach(btn => btn.innerHTML = iconPause);
-          sessionStorage.setItem('globalIsPlaying', 'true');
-          shouldPlay = true;
-        }
-      };
-
-      const targets = [
-          { el: document.querySelector('[mindar-image-target="targetIndex: 0"]'), content: slide1 },
-          { el: document.querySelector('[mindar-image-target="targetIndex: 1"]'), content: slide2 },
-          { el: document.querySelector('[mindar-image-target="targetIndex: 2"]'), content: slide3 }
-      ];
-
-      let activeTargets = 0;
-      targets.forEach(t => {
-          if(!t.el) return;
-          
-          t.el.addEventListener('targetFound', () => {
-              activeTargets++;
-              guides.forEach(g => g.style.opacity = 0); 
-              panels.forEach(p => p.classList.add('active')); 
-              
-              if (t.content && t.content.components['auto-slideshow']) {
-                  window.activeSlideshowComponent = t.content.components['auto-slideshow'];
-                  
-                  if (shouldPlay) {
-                      window.activeSlideshowComponent.startSlide();
-                      playPauseBtns.forEach(btn => btn.innerHTML = iconPause);
-                  } else {
-                      playPauseBtns.forEach(btn => btn.innerHTML = iconPlay);
-                  }
-              }
-          });
-          
-          t.el.addEventListener('targetLost', () => {
-              activeTargets--;
-              if(activeTargets < 0) activeTargets = 0;
-              
-              if(activeTargets === 0) {
-                guides.forEach(g => g.style.opacity = 1); 
-                panels.forEach(p => p.classList.remove('active')); 
-              }
-              
-              if (t.content && t.content.components['auto-slideshow']) {
-                  t.content.components['auto-slideshow'].stopSlide();
-                  window.activeSlideshowComponent = null;
-              }
-          });
-      });
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-    <!-- ▼▼▼ デザート企画セクション (追加分) ▼▼▼ -->
-    <div id="dessert-menu-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; z-index: 10000; background: rgba(0,0,0,0.85); display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;">
-        
-        <div style="background-color: #faf8f5; color: #333; padding: 40px; font-family: 'Yu Mincho', 'Hiragino Mincho ProN', serif; max-width: 650px; width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 30px; line-height: 1.6;">
-            <h2 style="font-size: 24px; margin-top: 0; border-bottom: 1px solid #ccc; padding-bottom: 15px; text-align: center; color: #1a1a1a; font-weight: normal; letter-spacing: 2px;">
-                French LABO. デセール スピンオフ企画
-            </h2>
-            
-            <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 30px;">
-                <img src="Gemini_Generated_Image_ba9kwwba9kwwba9k.jpg" alt="旬の果実" style="width: 48%; border-radius: 4px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                <img src="Gemini_Generated_Image_u3gsh6u3gsh6u3gs.jpg" alt="パフェとワイン" style="width: 48%; border-radius: 4px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-            </div>
+  <title>French LABO. (フレンチラボ) | 姫路・野里のフレンチレストラン・オーベルジュ</title>
+  <meta name="description" content="2026年秋、兵庫県姫路市野里に誕生する古民家オーベルジュ「NOATO auberge RO」に先駆け、料理が立ち上がる過程を味わう場所「French LABO. (フレンチラボ)」。旬の食材が炭火の熱を帯びる特別なコース料理をお愉しみください。">
+  <meta name="keywords" content="French LABO, フレンチラボ, 姫路, 野里, フレンチ, レストラン, オーベルジュ, 古民家, 予約, 米田武史">
+  <link rel="canonical" href="https://french-labo.jp/">
+  <meta name="format-detection" content="telephone=no">
 
-            <p style="font-size: 15px; margin-bottom: 35px; text-align: justify; letter-spacing: 0.5px;">
-                旬の果実、香り、温度、食感。<br>
-                テストキッチンで育ててきたフランス料理の余韻を、３日間だけのパフェに閉じ込めます。<br>
-                ご好評いただいたSeason1,Season2に引き続き、スピンオフ企画としてご用意致しました。<br>
-                ひと口ごとに香りが変わる、French LABO.のデセールをお楽しみください。
-            </p>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="French LABO. | 姫路・野里のフレンチレストラン">
+  <meta property="og:description" content="料理が立ち上がる過程を味わう場所。旬の食材が炭火の熱を帯び、皿の上で完成していく様をお愉しみください。完全予約制。">
+  <meta property="og:url" content="https://french-labo.jp/">
+  <meta property="og:site_name" content="French LABO.">
+  <meta property="og:image" content="https://french-labo.jp/fl-top_1.jpg"> <meta name="twitter:card" content="summary_large_image">
+  
+  <base target="_top">
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* =========================================
+       絶対指定の4色カラーパレット
+       ========================================= */
+    :root {
+      --main-color: #111112;
+      --sub-color: #AFB6BB;
+      --accent-color: #CC4900;
+      --white-color: #F0F0F0;
+      
+      /* FullCalendarのシステムカラーを4色で上書き */
+      --fc-bg-color: var(--white-color);
+      --fc-neutral-bg-color: var(--white-color);
+      --fc-neutral-text-color: var(--main-color);
+      --fc-border-color: var(--sub-color);
+      --fc-button-text-color: var(--white-color);
+      --fc-button-bg-color: var(--main-color);
+      --fc-button-border-color: var(--main-color);
+      --fc-button-hover-bg-color: var(--accent-color);
+      --fc-button-hover-border-color: var(--accent-color);
+      --fc-button-active-bg-color: var(--accent-color);
+      --fc-button-active-border-color: var(--accent-color);
+      --fc-event-bg-color: var(--main-color);
+      --fc-event-border-color: var(--main-color);
+      --fc-event-text-color: var(--white-color);
+      --fc-today-bg-color: transparent;
+    }
 
-            <div style="background: #fff; padding: 30px; border: 1px solid #eaeaea; position: relative;">
-                <div style="text-align: center; margin-bottom: 25px;">
-                    <h3 style="font-size: 18px; margin-top: 0; color: #8b0000; font-weight: normal;">
-                        旬果のパフェ ＋ グラスドリンク ＋ アミューズ３種
-                    </h3>
-                    <p style="font-size: 20px; font-weight: bold; margin: 10px 0;">￥5,000<span style="font-size: 13px; font-weight: normal;">（税込）</span></p>
-                    <p style="font-size: 12px; color: #888; margin: 0;">販売目標：36食（￥180,000）</p>
-                </div>
-                
-                <div style="text-align: center; margin-bottom: 25px;">
-                    <p style="font-size: 15px; font-weight: bold; margin-bottom: 5px;">各日２部制一斉スタート　13:00~ / 15:00~</p>
-                    <p style="font-size: 13px; color: #8b0000; margin: 0;">※完全予約制　※１部につき6席まで</p>
-                </div>
-                
-                <hr style="border: none; border-top: 1px dashed #ccc; margin: 20px 0;">
-                
-                <dl style="margin: 0; padding: 0;">
-                    <dt style="font-weight: bold; margin-bottom: 5px; color: #333;">◆ Parfait - パフェ</dt>
-                    <dd style="margin: 0 0 15px 0; font-size: 14px; color: #555;">Pêche-白桃　or　Mangue-マンゴー　or　Muscat-マスカット　からチョイス</dd>
-
-                    <dt style="font-weight: bold; margin-bottom: 5px; color: #333;">◆ Boisson - お飲み物（グラスドリンク）</dt>
-                    <dd style="margin: 0 0 15px 0; font-size: 14px; color: #555;">
-                        <span style="display:inline-block; width: 100px;">アルコール：</span>シャンパーニュ　or　貴腐ワイン　からチョイス<br>
-                        <span style="display:inline-block; width: 100px;">ノンアルコール：</span>ノンアルコールスパークリング　or　フレッシュハーブティー　からチョイス
-                    </dd>
-
-                    <dt style="font-weight: bold; margin-bottom: 5px; color: #333;">◆ Amuse-bouche</dt>
-                    <dd style="margin: 0; font-size: 14px; color: #555;">（３種のアミューズ・ブーシュ）</dd>
-                </dl>
-            </div>
-        </div>
-        
-        <!-- 追加場所指定の「Menu Dégustation」 (元のソースに存在しなかったため目印として追加) -->
-        <div style="background-color: #fff; color: #333; padding: 30px; font-family: 'Yu Mincho', 'Hiragino Mincho ProN', serif; max-width: 650px; width: 100%; border-radius: 8px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-            <h2 style="font-size: 20px; margin: 0; font-weight: normal; letter-spacing: 2px;">Menu Dégustation</h2>
-            <p style="font-size: 14px; color: #777; margin-top: 10px;">(既存のコースメニュー等がここに入ります)</p>
-        </div>
-        
-    </div>
-    <!-- ▲▲▲ デザート企画セクション (追加分) ▲▲▲ -->
+    /* 全体デザイン */
+    body { 
+      font-family: 'Lora', 'Shippori Mincho', "Hiragino Mincho ProN", serif; 
+      font-size: 16px; padding: 0; background-color: var(--white-color); color: var(--main-color); 
+      margin: 0; line-height: 1.8; -webkit-font-smoothing: antialiased; 
+    }
+    *, *::before, *::after { box-sizing: border-box; }
     
-  </body>
-</html>
+    input, button, textarea, select { font-family: inherit; }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    
+    .hero { position: relative; height: 80vh; min-height: 500px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: var(--white-color); overflow: hidden; background: var(--main-color); }
+    .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.4; z-index: 1; overflow: hidden; }
+    
+    .hero-content { position: relative; z-index: 2; padding: 0 20px; width: 100%; }
+    .hero h1 { font-weight: 400; letter-spacing: clamp(4px, 2vw, 8px); font-size: clamp(2.5em, 6vw, 4.5em); margin-bottom: 30px; color: var(--white-color); }
+    .concept-text { font-size: clamp(1em, 2.5vw, 1.2em); letter-spacing: 2px; line-height: 2.2; color: var(--white-color); font-weight: 400; }
+
+    section { max-width: 1000px; margin: 140px auto; padding: 0 25px; width: 100%; }
+    
+    h2.section-title { font-weight: 500; letter-spacing: 4px; font-size: clamp(1.8em, 4vw, 2.8em); text-align: center; margin-bottom: 70px; position: relative; padding-bottom: 20px; color: var(--main-color); text-transform: uppercase; }
+    h2.section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 40px; height: 1px; background: var(--accent-color); }
+
+    .course-section { display: flex; flex-wrap: wrap; gap: 40px; align-items: stretch; }
+    .slideshow-container { flex: 1 1 400px; position: relative; height: clamp(300px, 40vw, 450px); border-radius: 4px; overflow: hidden; border: 1px solid var(--sub-color); width: 100%; }
+    .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1.5s ease-in-out; background-size: cover; background-position: center; }
+    .slide.active { opacity: 1; }
+    
+    .course-info { flex: 1 1 350px; display: flex; flex-direction: column; justify-content: center; }
+    .price-tag { font-size: clamp(1.5em, 3vw, 2.2em); border-bottom: 1px solid var(--sub-color); padding-bottom: 15px; margin-bottom: 25px; font-weight: 500; line-height: 1.4; letter-spacing: 1px; }
+
+    #calendar-wrapper { background: var(--white-color); padding: 0; position: relative; }
+    .calendar-header-top { text-align: center; margin-bottom: 25px; }
+    #current-month-label { font-size: 1.5em; font-weight: 500; letter-spacing: 2px; color: var(--main-color); }
+    .calendar-nav-bottom { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; width: 100%; }
+    .cal-btn { background: var(--main-color); color: var(--white-color); border: none; padding: 12px 18px; border-radius: 4px; cursor: pointer; transition: background 0.2s; font-size: 0.9em; min-width: 100px; font-weight: 500; letter-spacing: 1px; }
+    .cal-btn:hover { background: var(--accent-color); }
+    .cal-btn:disabled { background: var(--sub-color); cursor: not-allowed; }
+
+    .fc-theme-standard th, .fc-theme-standard td { border-color: var(--sub-color) !important; }
+    .fc-daygrid-day-frame { min-height: 90px !important; display: flex; flex-direction: column; }
+    .custom-restricted-day, .fc-day-past { background-color: var(--sub-color) !important; pointer-events: none !important; }
+    .custom-restricted-day .fc-daygrid-day-number, .fc-day-past .fc-daygrid-day-number { color: var(--white-color) !important; }
+    
+    /* 枠自体に改行を許可する設定を追加 */
+    .fc-event { border: none !important; border-radius: 4px !important; padding: 4px 6px !important; margin: 2px 0 !important; cursor: pointer !important; white-space: normal !important; }
+    .fc-event-main { white-space: normal !important; }
+    /* 改行を許可するように white-space を変更 */
+    .fc-event-title { font-size: 0.95em !important; font-weight: 700 !important; text-align: center !important; display: block !important; letter-spacing: 0.5px; white-space: pre-wrap !important; }
+
+    .available-event { background-color: var(--main-color) !important; color: var(--white-color) !important; }
+    .full-event { background-color: var(--sub-color) !important; color: var(--main-color) !important; pointer-events: none !important; }
+    .holiday-event { background-color: var(--sub-color) !important; color: var(--main-color) !important; pointer-events: none !important; }
+
+    .inverted-bg { 
+      background: linear-gradient(135deg, #111112 0%, #2a2a2d 50%, #111112 100%); 
+      color: var(--white-color); width: 100%; margin: 140px 0; padding: 1px 0; 
+    }
+    .inverted-bg section { margin: 120px auto; }
+    .inverted-bg .section-title { color: var(--white-color); margin-bottom: 50px; }
+    .store-concept-container { display: flex; flex-direction: column; gap: 50px; align-items: center; text-align: center; }
+    .store-slideshow { width: 100%; height: 450px; flex: none; border-color: rgba(255, 255, 255, 0.15); }
+    .store-concept-content p { line-height: 1.8; margin-bottom: 20px; font-weight: 400; }
+    .catchphrase { font-size: 1.05em; letter-spacing: 4px; margin-bottom: -80px !important; color: var(--white-color); }
+    .brand-name { font-size: clamp(3.5em, 8vw, 5em); letter-spacing: 0; margin-bottom: -40px !important; font-weight: 400; line-height: 1; }
+    .brand-sub { font-size: 0.9em; letter-spacing: 3px; margin-bottom: 40px !important; color: var(--sub-color); text-transform: uppercase; }
+
+    .pr-cards { display: flex; gap: 25px; justify-content: center; margin-top: 20px; flex-wrap: wrap; width: 100%; }
+    .pr-card { flex: 1 1 350px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; overflow: hidden; text-decoration: none; color: var(--white-color); transition: transform 0.4s ease, background 0.4s ease, border-color 0.4s ease; display: flex; flex-direction: column; }
+    .pr-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); }
+    .pr-card-img { width: 100%; height: 200px; background-size: cover; background-position: center; }
+    .pr-card-body { padding: 25px; display: flex; flex-direction: column; gap: 10px; text-align: left; }
+    .pr-card-date { font-size: 0.85em; color: var(--sub-color); letter-spacing: 1px; }
+    .pr-card-title { font-size: 1.05em; font-weight: 500; margin: 0; line-height: 1.6; letter-spacing: 0.5px; }
+
+    .chef-container { display: flex; flex-wrap: nowrap; gap: 40px; align-items: flex-start; }
+    .chef-slideshow { flex: 0 0 45%; height: 500px; position: relative; overflow: hidden; border-radius: 4px; }
+    .chef-bio { flex: 1 1 auto; }
+    .cv-list { list-style: none; padding: 0; font-size: 0.95em; color: var(--main-color); margin-top: 25px; }
+    .cv-item { display: flex; margin-bottom: 12px; padding-left: 15px; border-left: 2px solid var(--sub-color); }
+    .cv-year { flex: 0 0 65px; font-weight: 500; }
+
+    .info-content { max-width: 600px; margin: 0 auto; }
+    .info-dl { width: 100%; border-top: 1px solid var(--sub-color); margin: 0; padding: 0; }
+    .info-row { display: flex; border-bottom: 1px solid var(--sub-color); padding: 30px 0; }
+    .info-row dt { flex: 0 0 160px; font-weight: 500; letter-spacing: 2px; }
+    .info-row dd { flex: 1; margin: 0; line-height: 1.8; font-weight: 400; }
+
+    .map-toggle-btn { background: var(--main-color); color: var(--white-color); border: none; padding: 16px 30px; cursor: pointer; display: block; margin: 50px auto 0; border-radius: 4px; transition: background 0.3s; width: 100%; max-width: 320px; font-size: 1em; font-weight: 500; letter-spacing: 2px; }
+    .map-toggle-btn:hover { background: var(--accent-color); }
+    .map-wrapper { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; position: relative; }
+    .map-wrapper.open { max-height: 600px; margin-top: 40px; }
+    .map-wrapper iframe { width: 100%; height: 450px; border: 0; border-radius: 4px; filter: grayscale(100%) !important; -webkit-filter: grayscale(100%) !important; }
+
+    footer { background: var(--white-color); color: var(--sub-color); text-align: center; padding: 60px 20px; font-size: 0.85em; border-top: 1px solid var(--sub-color); margin-top: 100px; letter-spacing: 1px; }
+    footer a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--sub-color); transition: border-color 0.3s; }
+    footer a:hover { border-color: var(--main-color); color: var(--main-color); }
+
+    #loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(240, 240, 240, 0.8); z-index: 50; justify-content: center; align-items: center; font-weight: 500; letter-spacing: 2px; color: var(--main-color); }
+
+    .modal-overlay { background-color: rgba(17, 17, 18, 0.6); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+    .modal-content { background-color: var(--white-color); padding: 40px; border-radius: 4px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+
+    @media (max-width: 767px) {
+      .hero { height: 100vh; height: 100dvh; min-height: auto; width: 100%; }
+      section { margin: 100px auto; padding: 0 20px; }
+      h2.section-title { margin-bottom: 50px; }
+      .course-section { flex-direction: column; gap: 40px; }
+      .chef-container { flex-direction: column; gap: 40px; }
+      .slideshow-container, .store-slideshow, .chef-slideshow { flex: none; width: 100%; height: auto; aspect-ratio: 16 / 9; }
+      .inverted-bg { margin: 100px 0; }
+      .inverted-bg section { margin: 80px auto; }
+      .pr-cards { flex-wrap: nowrap; gap: 10px; }
+      .pr-card { flex: 1 1 50%; min-width: 0; }
+      .pr-card-img { height: 100px; }
+      .pr-card-body { padding: 12px 10px; gap: 5px; }
+      .pr-card-date { font-size: 0.75em; }
+      .pr-card-title { font-size: 0.8em; line-height: 1.4; }
+      .calendar-header-top { margin-bottom: 20px; }
+      .calendar-nav-bottom { justify-content: space-between; gap: 10px; margin-bottom: 25px; }
+      .cal-btn { flex: 1; min-width: 0; font-size: 0.85em; padding: 12px 0; }
+      .info-row { display: block; padding: 25px 0; }
+      .info-row dt { margin-bottom: 8px; font-size: 0.9em; color: var(--sub-color); text-transform: uppercase; }
+      .info-row dd { margin: 0; font-size: 1.05em; line-height: 1.6; }
+      .fc-daygrid-day-frame { min-height: 75px !important; }
+      .fc-daygrid-day-number { font-size: 0.95em !important; padding: 6px !important; }
+      .fc-col-header-cell-cushion { font-size: 0.9em !important; padding: 12px 0 !important; }
+      
+      /* SP時の改行対応と、2段フル用の文字サイズ調整 */
+      .fc-event { padding: 2px 0 !important; margin: 2px !important; white-space: normal !important; }
+      .fc-event-main { white-space: normal !important; }
+      .fc-event-title { font-size: 0.85em !important; text-align: center !important; font-weight: 700 !important; letter-spacing: 0 !important; white-space: pre-wrap !important; line-height: 1.2 !important; word-break: break-all !important; }
+      .full-day-holiday .fc-event-title { font-size: 0.65em !important; line-height: 1.2 !important; padding: 2px 0 !important; }
+      
+      .modal-content { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="slide active" style="background-image: url('./fl-top_1.jpg')" title="フレンチラボ メイン画像1"></div>
+      <div class="slide" style="background-image: url('./fl-top_2.jpg')" title="フレンチラボ メイン画像2"></div>
+      <div class="slide" style="background-image: url('./fl-top_3.jpg')" title="フレンチラボ メイン画像3"></div>
+    </div>
+    <div class="hero-content">
+      <h1>French LABO.</h1>
+      <p class="concept-text">2026年秋、姫路市野里に誕生する<br>オーベルジュに先駆け<br>料理が立ち上がる過程を味わう場所<br>French LABO.です。</p>
+    </div>
+  </header>
+
+  <main>
+
+    <section id="dessert-event">
+      <h2 class="section-title">Dessert Event</h2>
+      <div class="course-section">
+        <div class="slideshow-container" aria-hidden="true">
+          <div class="slide active" style="background-image: url('./Gemini_Generated_Image_u3gsh6u3gsh6u3gs.jpg')" title="パフェイメージ1"></div>
+          <div class="slide" style="background-image: url('./Gemini_Generated_Image_ba9kwwba9kwwba9k.jpg')" title="パフェイメージ2"></div>
+        </div>
+        <div class="course-info">
+          <h3 class="price-tag">旬果のパフェ＋グラスドリンク＋<br>アミューズ３種<br><span style="font-size:0.8em; font-weight:400;">5,000円 <span style="font-size:0.65em;">(税込)</span></span></h3>
+          <p style="font-size: 0.95em; line-height: 1.8; font-weight: 400; margin-bottom: 25px;">
+            旬の果実、香り、温度、食感。<br>
+            テストキッチンで育ててきたフランス料理の余韻を、３日間だけのパフェに閉じ込めます。<br>
+            ご好評いただいたSeason1,Season2に引き続き、スピンオフ企画としてご用意致しました。<br>
+            ひと口ごとに香りが変わる、French LABO.のデセールをお楽しみください。
+          </p>
+          <p style="font-size: 0.9em; line-height: 1.8; font-weight: 400; margin-bottom: 25px;">
+            <strong>◆Parfait-パフェ</strong><br>
+            Pêche-白桃　or　Mangue-マンゴー　or　Muscat-マスカット　からチョイス<br><br>
+            <strong>◆Boisson-お飲み物（グラスドリンク）</strong><br>
+            アルコール　シャンパーニュ　or　貴腐ワイン　からチョイス<br>
+            ノンアルコール　ノンアルコールスパークリング　or　フレッシュハーブティー　からチョイス<br><br>
+            <strong>◆Amuse-bouche（３種のアミューズ・ブーシュ）</strong>
+          </p>
+          <p style="font-size:0.8em; line-height: 1.8; border: 1px solid var(--sub-color); padding: 20px; border-radius: 4px; font-weight: 400;">
+            販売目標：36食（￥180,000）<br>
+            各日２部制一斉スタート　13:00~/15:00~<br>
+            ※完全予約制　※１部につき6席まで
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="course">
+      <h2 class="section-title">Menu Dégustation</h2>
