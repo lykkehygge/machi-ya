@@ -216,7 +216,7 @@
       <div class="slide" style="background-image: url('./fl-top_3.jpg')" title="フレンチラボ メイン画像3"></div>
     </div>
     <div class="hero-content">
-      <h1>French LABO.</h1>
+      <h1 onclick="openPwModal()" style="cursor: pointer;">French LABO.</h1>
       <p class="concept-text">2026年秋、姫路市野里に誕生する<br>オーベルジュに先駆け<br>料理が立ち上がる過程を味わう場所<br>French LABO.です。</p>
     </div>
   </header>
@@ -227,11 +227,11 @@
       <h2 class="section-title">Dessert Event</h2>
       <div class="course-section">
         <div class="slideshow-container" aria-hidden="true">
-          <div class="slide active" style="background-image: url('./parfait-1b.jpg')" title="パフェイメージ1"></div>
+          <div class="slide active" style="background-image: url('./parfait-1.jpg')" title="パフェイメージ1"></div>
           <div class="slide" style="background-image: url('./parfait-2.jpg')" title="パフェイメージ2"></div>
         </div>
         <div class="course-info">
-          <h3 class="price-tag">旬果のパフェ+<br><span style="font-size:0.65em;">グラスドリンク&アミューズ３種</span><br><span style="font-size:0.8em; font-weight:400;">5,000円 <span style="font-size:0.65em;">(税込)</span></span></h3>
+          <h3 class="price-tag">旬果のパフェ＋グラスドリンク＋<br>アミューズ３種<br><span style="font-size:0.8em; font-weight:400;">5,000円 <span style="font-size:0.65em;">(税込)</span></span></h3>
           <p style="font-size: 0.95em; line-height: 1.8; font-weight: 400; margin-bottom: 25px;">
             旬の果実、香り、温度、食感。<br>
             テストキッチンで育ててきたフランス料理の余韻を、３日間だけのパフェに閉じ込めます。<br>
@@ -247,27 +247,27 @@
             <strong>◆Amuse-bouche（３種のアミューズ・ブーシュ）</strong>
           </p>
           <p style="font-size:0.8em; line-height: 1.8; border: 1px solid var(--sub-color); padding: 20px; border-radius: 4px; font-weight: 400;">
-            各日２部制一斉スタート　13:00〜 / 15:00〜<br>
+            各日２部制一斉スタート 13:00〜 / 15:00〜<br>
             ※完全予約制<br>
            ※１部につき6席まで
           </p>
           <div style="margin-top: 25px; padding: 20px; border: 1px solid var(--sub-color); border-radius: 4px;">
-            <h4 style="font-weight: 500; text-align: center; margin-bottom: 20px; letter-spacing: 2px;">デセールご予約</h4>
+            <h4 style="font-weight: 500; text-align: center; margin-bottom: 20px; letter-spacing: 2px;">デザート限定枠 予約</h4>
             <div style="display: flex; flex-direction: column; gap: 15px;">
               <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <strong style="width: 120px;">8月21日(金)</strong>
-                <button class="cal-btn" style="flex: 1;">13:00</button>
-                <button class="cal-btn" style="flex: 1;">15:00</button>
+                <button class="cal-btn" style="flex: 1;" onclick="openDessertModal('2026-08-21', '13:00')">13:00</button>
+                <button class="cal-btn" style="flex: 1;" onclick="openDessertModal('2026-08-21', '15:00')">15:00</button>
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <strong style="width: 120px;">8月22日(土)</strong>
-                <button class="cal-btn" style="flex: 1;">13:00</button>
-                <button class="cal-btn" style="flex: 1;">15:00</button>
+                <button class="cal-btn" style="flex: 1;" onclick="openDessertModal('2026-08-22', '13:00')">13:00</button>
+                <button class="cal-btn" style="flex: 1;" onclick="openDessertModal('2026-08-22', '15:00')">15:00</button>
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <strong style="width: 120px;">8月23日(日)</strong>
-                <button class="cal-btn" style="flex: 1;">13:00</button>
-                <button class="cal-btn" style="flex: 1;">15:00</button>
+                <button class="cal-btn" style="flex: 1;" onclick="openDessertModal('2026-08-23', '13:00')">13:00</button>
+                <button class="cal-btn" style="flex: 1;" onclick="openDessertModal('2026-08-23', '15:00')">15:00</button>
               </div>
             </div>
           </div>
@@ -276,361 +276,709 @@
     </section>
 
     <section id="course">
+
       <h2 class="section-title">Menu Dégustation</h2>
+
       <div class="course-section">
+
         <div class="slideshow-container" aria-hidden="true">
+
           <div class="slide active" style="background-image: url('./fl-dish_1.jpg')" title="コース料理イメージ1"></div>
+
           <div class="slide" style="background-image: url('./fl-dish_2.jpg')" title="コース料理イメージ2"></div>
+
           <div class="slide" style="background-image: url('./fl-dish_3.jpg')" title="コース料理イメージ3"></div>
+
           <div class="slide" style="background-image: url('./fl-dish_4.jpg')" title="コース料理イメージ4"></div>
+
           <div class="slide" style="background-image: url('./fl-dish_5.jpg')" title="コース料理イメージ5"></div>
+
           <div class="slide" style="background-image: url('./fl-dish_6.jpg')" title="コース料理イメージ6"></div>
+
           <div class="slide" style="background-image: url('./fl-dish_7.jpg')" title="コース料理イメージ7"></div>
+
         </div>
+
         <div class="course-info">
+
           <h3 class="price-tag">旬の食材で彩る、<br>おまかせコース<br><span style="font-size:0.8em; font-weight:400;">16,000円 <span style="font-size:0.65em;">(税込)</span></span></h3>
+
           <p class="course-note" style="font-size: 1.05em; font-weight: 400;">前菜 2皿 / 魚料理 1皿 / 肉料理 1皿 /<br>デザート 2皿 / パン / 食後のお飲み物</p>
+
           <p style="font-size:0.8em; line-height: 1.8; border: 1px solid var(--sub-color); padding: 20px; border-radius: 4px; margin-top: 25px; font-weight: 400;">
+
             ※ご提供時間：2時間前後<br>
+
             ※ランチ(12:00)、ディナー(18:00)ともに同じ内容になります。<br>
+
             ※内容は季節の食材によって変更となる場合がございます。<br>
+
             ※一斉スタートのため、開始時間までにお越しください。<br>
+
             ※お子様のご利用について<br>
+
              大人の方と同じ料理を召し上がれるお子様に限ります。
+
           </p>
+
         </div>
+
       </div>
+
       
+
       <div class="course-section" style="margin-top: 100px;">
+
         <div class="slideshow-container" aria-hidden="true">
+
           <div class="slide active" style="background-image: url('./fl-drink_1.jpg')" title="ワインペアリング"></div>
+
         </div>
+
         <div class="course-info">
+
           <h3 style="font-weight:500; margin-bottom:20px; font-size: clamp(1.5em, 3vw, 2.2em); letter-spacing: 2px;">Drink Selection</h3>
+
           <p style="font-size: 1.05em; margin-bottom: 25px; font-weight: 400;">お料理一皿ごとに厳選したドリンクを少しずつお楽しみいただけます。</p>
+
           <ul style="padding-left: 20px; font-size: 0.95em; line-height: 2; font-weight: 400;">
+
             <li style="margin-bottom: 10px;">アルコールペアリングコース：8,500円 <span style="font-size:0.7em;">(税込)</span>〜</li>
+
             <li>ノンアルコールペアリングコース：4,200円 <span style="font-size:0.7em;">(税込)</span></li>
+
           </ul>
+
           <p style="font-size:0.8em; line-height: 1.8; border: 1px solid var(--sub-color); padding: 20px; border-radius: 4px; margin-top: 25px; font-weight: 400;">
+
             ※単品でのご用意もございます。
+
           </p>
+
+
         </div>
+
       </div>
+
     </section>
+
 
     <section id="reservation">
+
       <h2 class="section-title">RESERVATION</h2>
+
       <div id="calendar-wrapper">
+
         <div id="loading-overlay">LOADING...</div>
+
         <div class="calendar-header-top"><div id="current-month-label"></div></div>
+
         <div class="calendar-nav-bottom">
+
           <button class="cal-btn" id="btn-prev-month" onclick="changeMonth(-1)">◀ 前の月</button>
+
           <button class="cal-btn" onclick="goToToday()">今日</button>
+
           <button class="cal-btn" id="btn-next-month" onclick="changeMonth(1)">次の月 ▶</button>
+
         </div>
+
         <div id="calendar"></div>
+
       </div>
+
     </section>
+
 
     <div class="inverted-bg">
+
       <section id="store">
+
         <h2 class="section-title">Coming 2026 Autumn</h2>
+
         <div class="store-concept-container">
+
           <div class="store-concept-content"><p>古き良き町屋の趣を残しながら、<br>洗練されたモダンな空間へと生まれ変わります。<br>特別な日のためのお食事を、非日常の空間でお愉しみください。</p>
+
           </div>
+
           <div class="slideshow-container store-slideshow" aria-hidden="true">
+
             <div class="slide active" style="background-image: url('./fl-img_1.jpg');" title="オーベルジュ完成予想1"></div>
+
             <div class="slide" style="background-image: url('./fl-img_2.jpg');" title="オーベルジュ完成予想2"></div>
+
             <div class="slide" style="background-image: url('./fl-img_3.jpg');" title="オーベルジュ完成予想3"></div>
+
           </div>
+
           
+
           <div class="pr-cards">
+
             <a href="https://prtimes.jp/main/html/rd/p/000000007.000132186.html" class="pr-card" target="_blank" rel="noopener">
+
               <div class="pr-card-img" style="background-image: url('./fl-news_2.jpg');" title="PR記事画像1"></div>
+
               <div class="pr-card-body">
+
                 <span class="pr-card-date">2025.08.28</span>
+
                 <h4 class="pr-card-title">【9月2日・3日開催】姫路・野里に新たな食文化拠点誕生へ「古民家オーベルジュ」着工前内覧会を初開催</h4>
+
               </div>
+
             </a>
+
             <a href="https://prtimes.jp/main/html/rd/p/000000011.000132186.html" class="pr-card" target="_blank" rel="noopener">
+
               <div class="pr-card-img" style="background-image: url('./fl-news_1.jpg');" title="PR記事画像2"></div>
+
               <div class="pr-card-body">
+
                 <span class="pr-card-date">2026.03.19</span>
+
                 <h4 class="pr-card-title">【イベント事後レポート】姫路・野里の歴史が未来へ繋がる1日。「町家の日 in 姫路」連動企画、特別公開が大盛況！</h4>
+
               </div>
+
             </a>
+
           </div>
+
         </div>
+
       </section>
+
     </div>
 
+
     <section id="chef">
+
       <h2 class="section-title">CHEF</h2>
+
       <div class="chef-container">
+
         
+
         <div class="chef-slideshow" aria-hidden="true">
+
           <div class="slide active" style="background-image: url('./fl-chef_1.jpg');" title="シェフ 米田武史 1"></div>
+
           <div class="slide" style="background-image: url('./fl-chef_2.jpg');" title="シェフ 米田武史 2"></div>
+
         </div>
+
 
         <div class="chef-bio">
+
           <h3 style="font-size: clamp(1.6em, 3vw, 2.2em); letter-spacing: 4px; margin-bottom: 15px; font-weight: 500;">米田 武史</h3>
+
           <p style="font-size:0.8em; line-height: 1.8; padding: 0px; margin-top: -20px; font-weight: 400;">
+
             - TAKESHI KOMEDA -
+
           </p>
+
           <div class="cv-list">
+
             <div class="cv-item"><div class="cv-year">1982年</div><div class="cv-desc">奈良県生まれ</div></div>
+
             <div class="cv-item"><div class="cv-year">2002年</div><div class="cv-desc">リーガロイヤルホテル大阪 入社</div></div>
+
             <div class="cv-item"><div class="cv-year">2013年</div><div class="cv-desc">フランス研修<br>(Maison PIC,Jean François Piège)</div></div>
+
             <div class="cv-item"><div class="cv-year">2016年</div><div class="cv-desc">リーガロイヤルホテル小倉レストラン料理長<br>第8回エスコフィエ・フランス料理コンクール優勝</div></div>
+
             <div class="cv-item"><div class="cv-year">2017年</div><div class="cv-desc">ひらまつ杯<br>ボキューズ・ドール2019日本代表選考会第3位</div></div>
+
             <div class="cv-item"><div class="cv-year">2020年</div><div class="cv-desc">リーガロイヤルホテル大阪<br>レストランシャンボールスーシェフ</div></div>
+
             <div class="cv-item"><div class="cv-year">2024年</div><div class="cv-desc">J.S.Aソムリエ<br>取得</div></div>
+
           </div>
+
         </div>
+
       </div>
+
     </section>
+
     
+
     <section id="information" class="store-info">
+
       <h2 class="section-title">INFORMATION</h2>
+
       <div class="info-content">
+
         <dl class="info-dl">
+
           <div class="info-row">
+
             <dt>営業時間</dt>
+
             <dd>完全予約制（カレンダーをご確認ください）</dd>
+
           </div>
+
           <div class="info-row">
+
             <dt>お支払い方法</dt>
+
             <dd>現金、クレジットカード、各種QRコード決済</dd>
+
           </div>
+
           <div class="info-row">
+
             <dt>住所</dt>
+
             <dd>兵庫県姫路市本町174<br>アネスティ七番館 1階 AND内</dd>
+
           </div>
+
           <div class="info-row">
+
             <dt>アクセス</dt>
+
             <dd>徒歩：JR姫路駅より北へ徒歩約12分<br>車：近隣コインパーキングをご利用ください</dd>
+
           </div>
+
         </dl>
+
       </div>
+
       <button class="map-toggle-btn" onclick="toggleMap()" id="map-btn">Google mapで確認する</button>
+
       <div class="map-wrapper" id="map-wrapper">
+
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3607.5375886289917!2d134.68652127575038!3d34.832906872873046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3554e100150484a9%3A0xd860494fb7fc4538!2sFrench%20LABO.!5e1!3m2!1sja!2sjp!4v1776672540320!5m2!1sja!2sjp" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
       </div>
+
     </section>
+
   </main>
 
+
   <footer>
+
     <p>© <a href="https://www.gpm.co.jp/" target="_blank" rel="noopener">ジーピーエム株式会社</a> All Rights Reserved.</p>
+
     <p><a href="https://french-labo.jp/canc.html" target="_self"">キャンセルポリシー</p>
+
   </footer>
 
+
   <div id="res-modal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000; justify-content:center; align-items:center;">
+
     <div class="modal-content">
+
       <div id="modal-header-text" style="font-size: 1.3em; font-weight:500; text-align:center; margin-bottom:20px; border-bottom:1px solid var(--sub-color); padding-bottom:15px;">予約フォーム</div>
+
       <div class="form-group"><label>お名前 *</label><input type="text" id="input-name" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div>
+
       <div class="form-group"><label>電話番号 *</label><input type="tel" id="input-phone" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div>
+
       <div class="form-group"><label>メールアドレス *</label><input type="email" id="input-email" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div>
+
       <div class="form-group">
+
         <label>人数 * (最大<span id="max-people-label">6</span>名)</label>
+
         <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px; margin-top:5px;">
+
           <button type="button" onclick="adjustPeople(-1)" style="width:45px; height:45px; background:var(--white-color); border:1px solid var(--sub-color); border-radius:4px; font-size:1.5em; cursor:pointer; color:var(--main-color); display:flex; justify-content:center; align-items:center;">-</button>
+
           <input type="number" id="input-people" min="1" max="6" value="1" style="width:60px; height:45px; border:none; border-bottom:1px solid var(--sub-color); text-align:center; font-size:1.2em; background: transparent; color:var(--main-color); outline:none; pointer-events:none;" readonly>
+
           <button type="button" onclick="adjustPeople(1)" style="width:45px; height:45px; background:var(--white-color); border:1px solid var(--sub-color); border-radius:4px; font-size:1.5em; cursor:pointer; color:var(--main-color); display:flex; justify-content:center; align-items:center;">+</button>
+
         </div>
+
       </div>
+
       <div class="form-group"><label>ご利用目的</label><input type="text" id="input-purpose" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div>
+
       <div class="form-group"><label>苦手食材</label><input type="text" id="input-dislikes" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div>
+
       <div class="form-group"><label>アレルギー</label><input type="text" id="input-allergies" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid var(--sub-color); border-radius:4px;"></div>
+
       <p style="font-size:0.8em; color:var(--main-color); margin:15px 0;">ご入力いただきました個人情報は、レストランの予約管理にのみ使用いたします。</p>
+
       <label style="display:flex; align-items:center; gap:10px; margin-bottom:20px;"><input type="checkbox" id="agree-privacy"> 同意する</label>
+
       <div style="display:flex; gap:10px;"><button class="cal-btn" style="flex:1; background:var(--sub-color);" onclick="closeModal('res-modal')">戻る</button><button class="cal-btn" style="flex:2;" onclick="submitReservation()">予約確定</button></div>
+
+    </div>
+
+  </div>
+
+  <div id="pw-modal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1100; justify-content:center; align-items:center;">
+    <div class="modal-content" style="text-align:center;">
+      <div style="font-size: 1.1em; font-weight:500; margin-bottom:20px;">限定ページへアクセス</div>
+      <input type="password" id="secret-pw" placeholder="パスワードを入力" style="width:100%; padding:10px; margin-bottom:20px; border:1px solid var(--sub-color); border-radius:4px; text-align:center; font-size:1.1em;">
+      <div style="display:flex; gap:10px;">
+        <button class="cal-btn" style="flex:1; background:var(--sub-color);" onclick="closeModal('pw-modal')">キャンセル</button>
+        <button class="cal-btn" style="flex:1;" onclick="checkPw()">送信</button>
+      </div>
     </div>
   </div>
 
   <div id="msg-modal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1100; justify-content:center; align-items:center;">
+
     <div class="modal-content" style="text-align:center;">
+
       <div id="msg-text" style="margin-bottom:20px;"></div>
+
       <button class="cal-btn" onclick="closeModal('msg-modal')">OK</button>
+
     </div>
+
   </div>
 
+
   <script>
+
     // ★ここは必ず最新のGASウェブアプリURLに書き換えてください
+
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwsGXnYIV9N-T8JslrfzniugTQMVOypvFXeOVjWYDAICm5DxyuHKQfFRRQUICsZXP6gRA/exec";
 
+
     var currentBooking = {};
+
     var currentCalendarDate = new Date();
+
     // 2026年6月以前の場合は初期表示を7月に固定（★変更箇所1）
+
     if (currentCalendarDate.getFullYear() === 2026 && currentCalendarDate.getMonth() < 6) {
+
       currentCalendarDate = new Date(2026, 6, 1);
+
     }
+
     var fullCalendarInstance = null;
+
     var gDeadlineDate, gMaxAcceptDate, gHardEndDate;
 
+
     var slideContainers = document.querySelectorAll('.slideshow-container, .hero-bg, .chef-slideshow');
+
     slideContainers.forEach(function(container) {
+
       var slides = container.querySelectorAll('.slide');
+
       var currentSlide = 0;
+
       if (slides.length > 1) {
+
         setInterval(function() {
+
           slides[currentSlide].classList.remove('active');
+
           currentSlide = (currentSlide + 1) % slides.length;
+
           slides[currentSlide].classList.add('active');
+
         }, 4000);
+
       }
+
     });
 
+
     function toggleMap() {
+
       var wrapper = document.getElementById('map-wrapper');
+
       var btn = document.getElementById('map-btn');
+
       if (wrapper.classList.contains('open')) {
+
         wrapper.classList.remove('open');
+
         btn.innerText = 'Google mapで確認する';
+
       } else {
+
         wrapper.classList.add('open');
+
         btn.innerText = '地図を閉じる';
+
       }
+
     }
+
 
     function adjustPeople(diff) {
+
       var input = document.getElementById('input-people');
+
       var currentVal = parseInt(input.value) || 1;
+
       var max = parseInt(input.max) || 6;
+
       var newVal = currentVal + diff;
+
       if(newVal >= 1 && newVal <= max) {
+
         input.value = newVal;
+
       }
+
     }
+
 
     document.addEventListener('DOMContentLoaded', function() { loadCalendarData(currentCalendarDate); });
+
     function goToToday() { 
+
       var d = new Date();
+
       // （★変更箇所2）
+
       if (d.getFullYear() === 2026 && d.getMonth() < 6) {
+
         currentCalendarDate = new Date(2026, 6, 1);
+
       } else {
+
         currentCalendarDate = d;
+
       }
+
       loadCalendarData(currentCalendarDate); 
+
     }
+
     function changeMonth(diff) { currentCalendarDate.setDate(1); currentCalendarDate.setMonth(currentCalendarDate.getMonth() + diff); loadCalendarData(currentCalendarDate); }
 
+
     function loadCalendarData(dateObj) {
+
       document.getElementById('loading-overlay').style.display = 'flex';
+
       var yearMonthStr = dateObj.getFullYear() + "-" + ('0' + (dateObj.getMonth() + 1)).slice(-2);
+
       document.getElementById('current-month-label').innerText = dateObj.getFullYear() + "年 " + (dateObj.getMonth() + 1) + "月";
+
       
+
       var baseDate = new Date();
+
       // （★変更箇所3）
+
       if (baseDate.getFullYear() === 2026 && baseDate.getMonth() < 6) {
+
         baseDate = new Date(2026, 6, 1);
+
       }
+
       document.getElementById('btn-prev-month').disabled = (dateObj.getFullYear() === baseDate.getFullYear() && dateObj.getMonth() === baseDate.getMonth());
+
       
+
       fetch(WEB_APP_URL + '?action=getCalendarData&yearMonth=' + yearMonthStr)
+
         .then(function(response) { return response.json(); })
+
         .then(function(data) { renderCalendar(data); })
+
         .catch(function(error) {
+
           console.error('Error:', error);
+
           alert("カレンダーの読み込みに失敗しました。");
+
           document.getElementById('loading-overlay').style.display = 'none';
+
         });
+
     }
 
+
     function renderCalendar(data) {
+
       document.getElementById('loading-overlay').style.display = 'none';
+
       var eventsArray = [];
+
       var today = new Date(); today.setHours(0,0,0,0);
+
       
+
       gDeadlineDate = new Date(today); 
+
       gDeadlineDate.setDate(today.getDate() + (parseInt(data.deadlineDays) || 0));
+
       gMaxAcceptDate = new Date(today); 
+
       gMaxAcceptDate.setDate(today.getDate() + (parseInt(data.maxDays) || 60));
+
       gHardEndDate = new Date(data.endDate || "2099-12-31"); 
+
       gHardEndDate.setHours(23,59,59);
 
+
       var displayYear = parseInt(data.currentYearMonth.split('-')[0]);
+
       var displayMonth = parseInt(data.currentYearMonth.split('-')[1]) - 1;
+
       var dateInMonth = new Date(displayYear, displayMonth, 1);
+
       
+
       var maxSeats = data.maxSeats || 6;
+
       
+
       while(dateInMonth.getMonth() === displayMonth) {
+
         var dateStr = dateInMonth.getFullYear() + '-' + ('0' + (dateInMonth.getMonth() + 1)).slice(-2) + '-' + ('0' + dateInMonth.getDate()).slice(-2);
+
         
+
         // 追加: 制限の判定を2つに分割（未来の制限期間か、締切が過ぎたか）
+
         var isFutureRestricted = (dateInMonth > gMaxAcceptDate) || (dateInMonth > gHardEndDate);
+
         var isDeadlinePassed = (dateInMonth < gDeadlineDate);
+
         
+
         // 未来の制限期間でなければイベントを描画（締切後の日付にも表示を出す）
+
         if (!isFutureRestricted) {
+
           // 「終日」の場合は1つの枠として2段で表示
+
           if (data.holidayMap[dateStr] === "終日") {
+
             eventsArray.push({
+
               title: 'Prep Day\n(開業準備)',
+
               start: dateStr,
+
               classNames: ['holiday-event', 'full-day-holiday']
+
             });
+
           } else {
+
             // それ以外（個別枠）の場合は通常通り判定
+
             ['昼', '夜'].forEach(function(slot) {
+
               var slotKey = dateStr + '_' + slot;
+
               var isHoliday = (data.holidayMap[slotKey] === "休業");
 
+
               if (isHoliday) {
+
                 eventsArray.push({ title: slot + '：Prep Day', start: dateStr, classNames: ['holiday-event'] });
+
               } else {
+
                 var booked = data.bookedCounts[slotKey] || 0;
+
                 var remain = maxSeats - booked;
+
                 
+
                 var titleText = slot + '：' + (remain > 0 ? '残' + remain : '満');
+
                 
+
                 // 予約締切を過ぎていて、かつ残席がある場合は「受付終了」とする
+
                 if (isDeadlinePassed && remain > 0) {
+
                   titleText = slot + '：受付終了';
+
                 }
 
+
                 eventsArray.push({ 
+
                   title: titleText, 
+
                   start: dateStr, 
+
                   // 締切を過ぎているか、満席の場合はグレーのイベントにする
+
                   classNames: [(isDeadlinePassed || remain <= 0) ? 'full-event' : 'available-event'],
+
                   extendedProps: { timeSlot: slot, remain: remain, restricted: isDeadlinePassed }
+
                 });
+
               }
+
             });
+
           }
+
         }
+
         dateInMonth.setDate(dateInMonth.getDate() + 1);
+
       }
 
+
       if (!fullCalendarInstance) {
+
         fullCalendarInstance = new FullCalendar.Calendar(document.getElementById('calendar'), {
+
           initialView: 'dayGridMonth', locale: 'ja', contentHeight: 'auto', headerToolbar: false, showNonCurrentDates: false, firstDay: 1,
+
           dayCellClassNames: function(arg) {
+
             if (!gDeadlineDate) return [];
+
             // 締切日前であってもマスのグレーアウトはしない。未来の受付期間外のみグレーアウト
+
             if (arg.date > gMaxAcceptDate || arg.date > gHardEndDate) return ['custom-restricted-day'];
+
             return [];
+
           },
+
           eventClick: function(info) {
+
             if (info.event.extendedProps.restricted || !info.event.extendedProps.remain || info.event.extendedProps.remain <= 0) return;
+
             currentBooking = { date: info.event.startStr, slot: info.event.extendedProps.timeSlot, remain: info.event.extendedProps.remain };
+
             document.getElementById('modal-header-text').innerText = currentBooking.date + " (" + currentBooking.slot + ")";
+
             var currentMax = Math.min(currentBooking.remain, 6);
+
             document.getElementById('input-people').max = currentMax;
+
             document.getElementById('max-people-label').innerText = currentMax;
+
             document.getElementById('input-people').value = 1;
+
             document.getElementById('res-modal').style.display = 'flex';
+
           }
+
         });
+
         fullCalendarInstance.render();
+
       }
+
       fullCalendarInstance.gotoDate(data.currentYearMonth + '-01');
+
       fullCalendarInstance.removeAllEvents();
+
       fullCalendarInstance.addEventSource(eventsArray);
+
     }
 
     function openDessertModal(date, time) {
@@ -643,62 +991,134 @@
       document.getElementById('res-modal').style.display = 'flex';
     }
 
+    function openPwModal() {
+      document.getElementById('secret-pw').value = '';
+      document.getElementById('pw-modal').style.display = 'flex';
+    }
+
+    function checkPw() {
+      var pw = document.getElementById('secret-pw').value;
+      if (pw === "202611-ro") {
+        window.location.href = "limited.html"; // 限定ページへの遷移（仮のURL）
+      } else {
+        alert("入力エラー：パスワードが違います。");
+        window.location.href = "/"; // サイトトップへ戻る
+      }
+    }
+
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
     
+
     function submitReservation() {
+
       var name = document.getElementById('input-name').value;
+
       var phone = document.getElementById('input-phone').value;
+
       var email = document.getElementById('input-email').value;
+
       var people = parseInt(document.getElementById('input-people').value, 10);
+
       var dislikes = document.getElementById('input-dislikes').value;
+
       var allergies = document.getElementById('input-allergies').value;
+
       var purpose = document.getElementById('input-purpose').value;
+
       if(!name || !phone || !email || !people || !document.getElementById('agree-privacy').checked) { alert("必須項目を入力してください"); return; }
+
       
+
       closeModal('res-modal');
+
       document.getElementById('loading-overlay').style.display = 'flex';
+
       
+
       var payload = { 
+
         date: currentBooking.date, 
+
         slot: currentBooking.slot, 
+
         name: name, 
+
         people: people, 
+
         email: email, 
+
         phone: phone, 
+
         purpose: purpose, 
+
         dislikes: dislikes, 
+
         allergy: allergies 
+
       };
 
+
       fetch(WEB_APP_URL, {
+
         method: 'POST',
+
         headers: { 'Content-Type': 'text/plain' },
+
         body: JSON.stringify(payload)
+
       })
+
       .then(function(response) { 
+
         if (!response.ok) throw new Error('Network response was not ok');
+
         return response.json(); 
+
       })
+
       .then(function(res) {
+
         if(res.status === "OK") {
+
           document.getElementById('msg-text').innerHTML = "予約が完了しました。";
+
           document.getElementById('msg-modal').style.display = 'flex';
+
           document.getElementById('input-name').value = '';
+
           document.getElementById('input-phone').value = '';
+
           document.getElementById('input-email').value = '';
+
           document.getElementById('input-purpose').value = '';
+
           document.getElementById('input-dislikes').value = '';
+
           document.getElementById('input-allergies').value = '';
+
           document.getElementById('agree-privacy').checked = false;
+
           loadCalendarData(currentCalendarDate);
+
         } else { alert("エラー: " + res.message); document.getElementById('loading-overlay').style.display = 'none'; }
+
       })
+
       .catch(function(error) {
+
         console.error('Error:', error);
+
         alert("通信エラーが発生しました。ブラウザをリロードして再度お試しください。");
+
         document.getElementById('loading-overlay').style.display = 'none';
+
       });
+
     }
+
   </script>
+
 </body>
+
 </html>
